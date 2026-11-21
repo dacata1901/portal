@@ -86,16 +86,21 @@ Parameters:
       - 'true'
       - 'false'
     Description: Run a Cloudflare Quick Tunnel (https://*.trycloudflare.com) in front of the app.
+  StudentPassword:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Optional password (12-128 chars) for all 100 university-issued student accounts (stu-10001..stu-10100).
   OrganizerPassword:
     Type: String
     Default: ''
     NoEcho: true
-    Description: Optional password (12-128 chars) for seeded account org-1 so organizers can sign in remotely.
+    Description: Optional password (12-128 chars) for university-issued organizer accounts (org-1, org-2).
   AdminPassword:
     Type: String
     Default: ''
     NoEcho: true
-    Description: Optional password (12-128 chars) for seeded account admin-1 so administrators can sign in remotely.
+    Description: Optional password (12-128 chars) for university-issued administrator account (admin-1).
 
 Conditions:
   CreateCognitoResources: !Equals [!Ref ProvisionCognito, 'true']
@@ -293,6 +298,7 @@ Resources:
               PORTAL_LOG_FILE=/var/lib/campus/requests.jsonl
               PORTAL_ALLOW_REMOTE_DEMO=1
               PORTAL_TRUST_LOCAL_PROXY=1
+              PORTAL_DISABLE_SIGNUP=1
               PORTAL_AUTH_MODE=${AuthMode}
               PORTAL_DATABASE_URL=${ResolvedDatabaseUrl}
               COGNITO_REGION=${CognitoRegion}
@@ -326,19 +332,20 @@ Resources:
               SERVICE
               systemctl daemon-reload
 
-              # Seed the database, then give seeded staff accounts passwords (never traced to logs).
+              # Seed the database, then provision passwords for university-issued accounts (never traced to logs).
               # /etc/campus-portal.env is root-only (chmod 600), so these steps run as root and hand ownership back.
               ( set -a; . /etc/campus-portal.env; set +a; cd /opt/campus; /opt/campus/.venv/bin/python server.py seed )
               set +x
+              export CAMPUS_STU_PW='${StudentPassword}'
               export CAMPUS_ORG_PW='${OrganizerPassword}'
               export CAMPUS_ADMIN_PW='${AdminPassword}'
-              for pair in "org-1:CAMPUS_ORG_PW" "admin-1:CAMPUS_ADMIN_PW"; do
-                uid="$(echo "$pair" | cut -d: -f1)"; var="$(echo "$pair" | cut -d: -f2)"
+              for pair in "student:CAMPUS_STU_PW" "organizer:CAMPUS_ORG_PW" "administrator:CAMPUS_ADMIN_PW"; do
+                role="$(echo "$pair" | cut -d: -f1)"; var="$(echo "$pair" | cut -d: -f2)"
                 if [ -n "$(printenv "$var")" ]; then
-                  ( set -a; . /etc/campus-portal.env; set +a; cd /opt/campus; /opt/campus/.venv/bin/python scripts/set_account_password.py "$uid" --db "$PORTAL_DB" --password-env "$var" ) || echo "Could not set password for $uid"
+                  ( set -a; . /etc/campus-portal.env; set +a; cd /opt/campus; /opt/campus/.venv/bin/python scripts/set_account_password.py --role "$role" --db "$PORTAL_DB" --password-env "$var" ) || echo "Could not set password for role $role"
                 fi
               done
-              unset CAMPUS_ORG_PW CAMPUS_ADMIN_PW
+              unset CAMPUS_STU_PW CAMPUS_ORG_PW CAMPUS_ADMIN_PW
               set -x
               chown -R ubuntu:ubuntu /var/lib/campus
               systemctl enable --now campus-portal.service

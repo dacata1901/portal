@@ -15,13 +15,14 @@ param(
     [switch]$ProvisionRds,
     [string]$DbMasterPassword = "",
     [switch]$DisableCloudflareTunnel,
+    [string]$StudentPassword = "",
     [string]$OrganizerPassword = "",
     [string]$AdminPassword = ""
 )
 
 $ErrorActionPreference = "Stop"
 
-foreach ($pw in @(@{ Name = "OrganizerPassword"; Value = $OrganizerPassword }, @{ Name = "AdminPassword"; Value = $AdminPassword })) {
+foreach ($pw in @(@{ Name = "StudentPassword"; Value = $StudentPassword }, @{ Name = "OrganizerPassword"; Value = $OrganizerPassword }, @{ Name = "AdminPassword"; Value = $AdminPassword })) {
     if (-not [string]::IsNullOrEmpty($pw.Value)) {
         if ($pw.Value.Length -lt 12 -or $pw.Value.Length -gt 128) { throw "$($pw.Name) must be 12-128 characters." }
         if ($pw.Value -match "['`"\r\n]") { throw "$($pw.Name) must not contain quotes or line breaks." }
@@ -143,6 +144,7 @@ try {
         $paramOverrides += "DbMasterPassword=$DbMasterPassword"
     }
     if ($DisableCloudflareTunnel) { $paramOverrides += "EnableCloudflareTunnel=false" }
+    if (-not [string]::IsNullOrEmpty($StudentPassword)) { $paramOverrides += "StudentPassword=$StudentPassword" }
     if (-not [string]::IsNullOrEmpty($OrganizerPassword)) { $paramOverrides += "OrganizerPassword=$OrganizerPassword" }
     if (-not [string]::IsNullOrEmpty($AdminPassword)) { $paramOverrides += "AdminPassword=$AdminPassword" }
 

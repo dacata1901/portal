@@ -138,6 +138,8 @@ class Handler(SimpleHTTPRequestHandler):
     def account_request(self,path):
         if not self.local_accounts_enabled():
             return self.reply(403,dict(code='LOCAL_ACCOUNTS_DISABLED',message='Đăng ký bằng mật khẩu hiện chỉ khả dụng trên máy cục bộ. Tài khoản trường được quản lý qua dịch vụ danh tính của trường.'))
+        if path=='/api/auth/register' and os.environ.get('PORTAL_DISABLE_SIGNUP')=='1':
+            return self.reply(403,dict(code='SIGNUP_DISABLED',message='Tài khoản sinh viên do nhà trường cấp. Vui lòng đăng nhập bằng tài khoản đã được cấp.'))
         try:
             self.check_account_origin()
             if self.headers.get('Content-Type','').split(';')[0].strip().lower()!='application/json':

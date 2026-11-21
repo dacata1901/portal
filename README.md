@@ -3,9 +3,9 @@
 **Campus Event Portal** là ứng dụng web quản lý và đăng ký sự kiện đại học chịu tải cao, chống đăng ký quá chỗ (race condition), hỗ trợ phân quyền chặt chẽ 3 vai trò, xác thực tài khoản an toàn và triển khai tự động theo mô hình **Multi-Cloud (Cloudflare Edge HTTPS + AWS Cloud)**.
 
 > 🌐 **Truy cập bản Demo trực tuyến 24/7 (Cloudflare HTTPS + AWS EC2 — mở được từ mọi mạng Wi-Fi/4G):**
-> - **Trang chủ ứng dụng:** https://musical-painted-realtors-administered.trycloudflare.com
-> - **Kiểm tra trạng thái hệ thống (`/readyz`):** https://musical-painted-realtors-administered.trycloudflare.com/readyz
-> - **API danh sách sự kiện (`/api/events`):** https://musical-painted-realtors-administered.trycloudflare.com/api/events
+> - **Trang chủ ứng dụng:** https://gdp-strings-polymer-veteran.trycloudflare.com
+> - **Kiểm tra trạng thái hệ thống (`/readyz`):** https://gdp-strings-polymer-veteran.trycloudflare.com/readyz
+> - **API danh sách sự kiện (`/api/events`):** https://gdp-strings-polymer-veteran.trycloudflare.com/api/events
 >
 > *(Lưu ý: Đường link `http://127.0.0.1:4173/` ở Mục 5 bên dưới chỉ dùng khi bạn tự chạy máy chủ trên máy tính cá nhân bằng lệnh `py -3 server.py`.)*
 
@@ -14,9 +14,9 @@
 ## 1. Tính năng nổi bật
 
 - **Giao diện hiện đại (Modern Indigo & Slate):** Thiết kế tối ưu tiếng Việt với bộ font **`Plus Jakarta Sans`** và **`Be Vietnam Pro`**, hỗ trợ đầy đủ cả máy tính lẫn điện thoại (`dist/theme-modern.css`).
-- **Đăng ký & Đăng nhập tài khoản thật:**
-  - Sinh viên tự đăng ký tài khoản bằng **Họ tên, Mã sinh viên, Email, Mật khẩu** (12–128 ký tự), băm mật khẩu an toàn bằng **`scrypt`**.
-  - Phiên đăng nhập lưu bằng Cookie **`HttpOnly; SameSite=Strict`** (tự bật `Secure` qua HTTPS), bảo vệ **CSRF Token (`X-CSRF-Token`)**, kiểm tra `Origin` và giới hạn tốc độ (**Rate Limit**) chống dò mật khẩu.
+- **Xác thực tài khoản do nhà trường cấp (Không tự đăng ký công khai):**
+  - Toàn bộ tài khoản **100 sinh viên (`student10001@example.test` .. `student10100@example.test`)**, **2 Ban tổ chức (`organizer@example.test`, `organizer2@example.test`)** và **1 Quản trị viên (`admin@example.test`)** đều do nhà trường cấp sẵn trong CSDL; giao diện đã bỏ chức năng tự đăng ký và khóa API `/api/auth/register` (`403 SIGNUP_DISABLED`).
+  - Mật khẩu băm bảo mật một chiều bằng **`scrypt`**, phiên đăng nhập lưu bằng Cookie **`HttpOnly; SameSite=Strict`** (tự bật `Secure` qua HTTPS), bảo vệ **CSRF Token (`X-CSRF-Token`)**, kiểm tra `Origin` và giới hạn tốc độ (**Rate Limit**) chống dò mật khẩu.
   - Tự động khóa chế độ giả danh `X-Demo-User` khi truy cập từ ngoài Internet qua Proxy/Cloudflare.
 - **Đăng ký / Hủy chỗ chuẩn giao dịch (Transactional & Idempotent):**
   - Xử lý an toàn **100 yêu cầu đồng thời tranh 20 chỗ** — chỉ đúng 20 sinh viên giữ chỗ thành công, 80 yêu cầu còn lại trả `409 EVENT_FULL`, tuyệt đối không âm chỗ hay tạo vé trùng.
@@ -133,18 +133,20 @@ npm.cmd start
 
 Truy cập trình duyệt tại: **http://127.0.0.1:4173/** — nhấn `Ctrl + C` để dừng máy chủ.
 
-### Bước 2: Sử dụng & Đặt mật khẩu tài khoản quản trị trên máy
-- **Sinh viên:** Bấm nút **Đăng ký** ở góc phải màn hình để tạo tài khoản sinh viên mới bằng MSSV, Email và Mật khẩu (tối thiểu 12 ký tự), sau đó đăng ký sự kiện, xem biên nhận và hủy chỗ.
-- **Ban tổ chức / Quản trị viên:** Để đăng nhập bằng tài khoản mẫu có sẵn (`org-1` hoặc `admin-1`), chạy lệnh đặt mật khẩu:
+### Bước 2: Cấp mật khẩu cho tài khoản nhà trường trên máy cá nhân
+Vì tài khoản do nhà trường cấp (không có nút tự đăng ký), chạy lệnh đặt mật khẩu hàng loạt theo vai trò:
 
 ```powershell
-py -3 scripts/set_account_password.py org-1
-py -3 scripts/set_account_password.py admin-1
+py -3 server.py seed
+py -3 scripts/set_account_password.py --role student
+py -3 scripts/set_account_password.py --role organizer
+py -3 scripts/set_account_password.py --role administrator
 ```
 
-Sau đó đăng nhập trên web bằng Email tương ứng trong dữ liệu mẫu:
-- Ban tổ chức (`org-1`): `organizer@example.test`
-- Quản trị viên (`admin-1`): `admin@example.test`
+Sau đó bấm **Đăng nhập** trên web bằng Email tương ứng trong dữ liệu mẫu:
+- **Sinh viên (`stu-10001`..`stu-10100`):** `student10001@example.test` .. `student10100@example.test`
+- **Ban tổ chức (`org-1`, `org-2`):** `organizer@example.test`, `organizer2@example.test`
+- **Quản trị viên (`admin-1`):** `admin@example.test`
 
 ---
 
@@ -159,6 +161,7 @@ Sau đó đăng nhập trên web bằng Email tương ứng trong dữ liệu m�
 ```powershell
 .\deploy\aws\deploy-aws.ps1 `
   -Region ap-southeast-2 `
+  -StudentPassword "MatKhauSinhVien>=12KyTu" `
   -OrganizerPassword "MatKhauBanToChuc>=12KyTu" `
   -AdminPassword "MatKhauQuanTriVien>=12KyTu"
 ```
@@ -166,8 +169,8 @@ Sau đó đăng nhập trên web bằng Email tương ứng trong dữ liệu m�
 Script sẽ tự động thực hiện toàn bộ quy trình:
 1. Tự nhận diện IPv4 công cộng của bạn (khóa Security Group ở mức `/32`, từ chối `0.0.0.0/0`).
 2. Đóng gói mã nguồn vào một **Amazon S3 Bucket riêng tư** (bật mã hóa `AES256`, chặn truy cập công khai).
-3. Dựng stack CloudFormation `campus-event-portal` gồm **VPC, EC2, EBS `gp3` mã hóa, CloudWatch Dashboard & Alarms, dịch vụ `cloudflared` (Cloudflare HTTPS Tunnel)**.
-4. Khởi tạo cơ sở dữ liệu, đặt mật khẩu cho `org-1` / `admin-1` an toàn (không ghi ra log) và in ra đường link công khai **`https://...trycloudflare.com`**.
+3. Dựng stack CloudFormation `campus-event-portal` gồm **VPC, EC2, EBS `gp3` mã hóa, CloudWatch Dashboard & Alarms, dịch vụ `cloudflared` (Cloudflare HTTPS Tunnel)** và bật khóa tự đăng ký (`PORTAL_DISABLE_SIGNUP=1`).
+4. Khởi tạo cơ sở dữ liệu, đặt mật khẩu cho toàn bộ 100 sinh viên + Ban tổ chức + Admin an toàn (không ghi ra log) và in ra đường link công khai **`https://...trycloudflare.com`**.
 
 ### Lấy lại đường link Cloudflare HTTPS bất kỳ lúc nào
 
@@ -230,7 +233,7 @@ py -3 scripts/benchmark_e.py
 ```
 
 ### Kết quả kiểm thử đã xác minh
-- **Backend, Bảo mật, Proxy, Tài khoản & AWS IaC:** **42/42 tests PASS** (`OK`).
+- **Backend, Bảo mật, Proxy, Tài khoản & AWS IaC:** **43/43 tests PASS** (`OK`).
 - **Frontend & Client Adapter:** **20/20 tests PASS** (`0 fail`) + kiểm tra cú pháp sạch lỗi.
 - **Benchmark Phần E (`BENCHMARK-E-RESULTS.json`):**
   - **E1 (100 yêu cầu HTTP đồng thời tranh 20 chỗ):** Đúng `20` HTTP `201`, `80` HTTP `409 EVENT_FULL`, `0` lỗi `5xx` (`p50 = 111.376 ms`, `p95 = 609.107 ms`, `p99 = 773.499 ms`).
