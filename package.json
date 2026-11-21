@@ -1,0 +1,15 @@
+{
+  "name": "university-event-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cổng đăng ký sự kiện đại học: giao diện tiếng Việt, API Python, kiểm thử cục bộ và cấu hình AWS chuẩn bị.",
+  "scripts": {
+    "start": "node scripts/start.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check dist/js/cognito-auth.js && node --check dist/js/data.js && node --check dist/js/api.js && node --check dist/js/utils.js && node --check dist/js/app.js",
+    "test:backend": "python3 -m unittest discover -s tests -p \"test_*.py\" -v"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

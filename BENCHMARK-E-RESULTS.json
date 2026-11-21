@@ -1,0 +1,188 @@
+{
+  "generatedAt": "2026-11-15T11:30:19.491963+00:00",
+  "ok": true,
+  "auditBefore": {
+    "ok": true,
+    "events": [
+      {
+        "id": "ai-campus",
+        "capacity": 120,
+        "active": 86,
+        "remaining": 34
+      },
+      {
+        "id": "career-kit",
+        "capacity": 60,
+        "active": 42,
+        "remaining": 18
+      },
+      {
+        "id": "cloud-lab",
+        "capacity": 20,
+        "active": 0,
+        "remaining": 20
+      },
+      {
+        "id": "green-campus",
+        "capacity": 100,
+        "active": 67,
+        "remaining": 33
+      },
+      {
+        "id": "hack-day",
+        "capacity": 40,
+        "active": 40,
+        "remaining": 0
+      },
+      {
+        "id": "open-mic",
+        "capacity": 180,
+        "active": 110,
+        "remaining": 70
+      }
+    ],
+    "duplicates": [],
+    "foreignKeys": []
+  },
+  "auditAfter": {
+    "ok": true,
+    "events": [
+      {
+        "id": "ai-campus",
+        "capacity": 120,
+        "active": 86,
+        "remaining": 34
+      },
+      {
+        "id": "career-kit",
+        "capacity": 60,
+        "active": 42,
+        "remaining": 18
+      },
+      {
+        "id": "cloud-lab",
+        "capacity": 20,
+        "active": 20,
+        "remaining": 0
+      },
+      {
+        "id": "green-campus",
+        "capacity": 100,
+        "active": 67,
+        "remaining": 33
+      },
+      {
+        "id": "hack-day",
+        "capacity": 40,
+        "active": 40,
+        "remaining": 0
+      },
+      {
+        "id": "open-mic",
+        "capacity": 180,
+        "active": 110,
+        "remaining": 70
+      }
+    ],
+    "duplicates": [],
+    "foreignKeys": []
+  },
+  "workloadE1": {
+    "description": "100 concurrent HTTP registrations for 20-seat cloud-lab",
+    "http201Count": 20,
+    "http409EventFullCount": 80,
+    "latency": {
+      "count": 100,
+      "minMs": 18.001,
+      "meanMs": 182.711,
+      "p50Ms": 111.376,
+      "p95Ms": 609.107,
+      "p99Ms": 773.499,
+      "maxMs": 873.877
+    },
+    "samples": [
+      {
+        "userId": "stu-10001",
+        "requestId": "bench-e1-stu-10001",
+        "status": 201,
+        "replayed": "false",
+        "latencyMs": 27.482,
+        "code": null,
+        "bookingId": "CP-3cb07f780a4e483c9105e9ec76a5664e"
+      },
+      {
+        "userId": "stu-10002",
+        "requestId": "bench-e1-stu-10002",
+        "status": 201,
+        "replayed": "false",
+        "latencyMs": 53.595,
+        "code": null,
+        "bookingId": "CP-796ee7f632b7401ea7115243a2bbfb86"
+      },
+      {
+        "userId": "stu-10003",
+        "requestId": "bench-e1-stu-10003",
+        "status": 201,
+        "replayed": "false",
+        "latencyMs": 170.793,
+        "code": null,
+        "bookingId": "CP-da51e2e7ac58453298ff01a78f847c84"
+      },
+      {
+        "userId": "stu-10004",
+        "requestId": "bench-e1-stu-10004",
+        "status": 201,
+        "replayed": "false",
+        "latencyMs": 87.374,
+        "code": null,
+        "bookingId": "CP-1a72978ead264b6ebf2d2180b8fc5887"
+      },
+      {
+        "userId": "stu-10005",
+        "requestId": "bench-e1-stu-10005",
+        "status": 409,
+        "replayed": "false",
+        "latencyMs": 554.879,
+        "code": "EVENT_FULL",
+        "bookingId": null
+      }
+    ]
+  },
+  "workloadE2": {
+    "description": "Drop-after-commit fault injection followed by 10 HTTP retries",
+    "faultInjected": true,
+    "faultException": "RemoteDisconnected",
+    "retryCount": 10,
+    "bookingId": "CP-d6b8f0cd97764669b3001ec8ad2b10c7",
+    "allHttp201": true,
+    "allReplayedHeaderTrue": true,
+    "remainingCapacityAfterE2": 33,
+    "latency": {
+      "count": 10,
+      "minMs": 4.836,
+      "meanMs": 17.919,
+      "p50Ms": 18.632,
+      "p95Ms": 26.665,
+      "p99Ms": 27.559,
+      "maxMs": 27.782
+    }
+  },
+  "workloadE3": {
+    "description": "20 concurrent cancellations + idempotency conflict verification",
+    "cancelCount": 20,
+    "allHttp200": true,
+    "remainingCapacityAfterCancel": 34,
+    "conflictStatus": 409,
+    "conflictCode": "IDEMPOTENCY_CONFLICT",
+    "conflictLatencyMs": 11.96,
+    "cancelLatency": {
+      "count": 20,
+      "minMs": 27.405,
+      "meanMs": 101.025,
+      "p50Ms": 85.362,
+      "p95Ms": 192.352,
+      "p99Ms": 209.694,
+      "maxMs": 214.029
+    }
+  }
+}

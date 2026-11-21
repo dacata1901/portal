@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f64060">
+  <meta name="description" content="Khám phá sự kiện đại học, gặp gỡ bạn mới và kết nối cùng cộng đồng sinh viên tại Campus.">
+  <title>Campus — Sự kiện đại học</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23f64060'/%3E%3Cpath d='M28 12a12 12 0 1 0 0 16l-5-5a5 5 0 1 1 0-6z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preload" href="./assets/fonts/Fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./runtime-config.js"></script>
+  <script defer src="./js/cognito-auth.js"></script>
+  <script defer src="./js/data.js"></script>
+  <script defer src="./js/api.js"></script>
+  <script defer src="./js/utils.js"></script>
+  <script defer src="./js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Chuyển đến nội dung</a>
+  <button type="button" id="demo-tools" hidden>Tùy chọn hiển thị</button>
+  <header class="site-header"><div class="container header-inner">
+    <a class="brand" href="#/events" aria-label="Campus — trang sự kiện"><span class="brand-symbol" aria-hidden="true">c<span>·</span></span><span>campus<span class="brand-caption">SỰ KIỆN ĐẠI HỌC</span></span></a>
+    <button class="icon-button mobile-toggle" id="menu-toggle" type="button" aria-label="Mở điều hướng" aria-expanded="false" aria-controls="main-nav">☰</button>
+    <nav class="main-nav" id="main-nav" aria-label="Điều hướng chính"></nav>
+    <div id="account-area" class="account-area"></div>
+  </div></header>
+  <main id="main" tabindex="-1"></main>
+  <footer class="site-footer"><div class="container footer-inner"><a class="footer-brand" href="#/events">campus<span>·</span></a><p>Sự kiện dành cho sinh viên.</p></div></footer>
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <dialog id="app-dialog" aria-labelledby="dialog-title"></dialog>
+  <noscript><div class="container">Bật JavaScript trong trình duyệt để sử dụng Campus.</div></noscript>
+</body>
+</html>

@@ -1,0 +1,43 @@
+name: Campus Portal CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements.txt pyyaml
+
+      - name: Run frontend logic tests and syntax check
+        run: |
+          npm test
+          npm run check
+
+      - name: Run backend, auth, and AWS IaC tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Run Part E HTTP benchmark and fault drill
+        run: python scripts/benchmark_e.py
+
+      - name: Upload Part E benchmark artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-e-results
+          path: BENCHMARK-E-RESULTS.json

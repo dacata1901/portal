@@ -1,0 +1,38 @@
+:root {
+  --font: Inter, "Segoe UI", system-ui, sans-serif;
+  --font-display: var(--font);
+}
+
+body {
+  font-family: var(--font);
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font);
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.brand,
+.footer-brand {
+  font-family: var(--font);
+  font-weight: 700;
+}
+
+.icon {
+  flex-shrink: 0;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mobile-toggle .icon {
+  width: 21px;
+  height: 21px;
+}

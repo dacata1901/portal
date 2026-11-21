@@ -1,0 +1,1588 @@
+{
+  "students": [
+    {
+      "id": "stu-10001",
+      "studentId": "10001",
+      "name": "Nguyễn Minh Anh",
+      "email": "student10001@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10002",
+      "studentId": "10002",
+      "name": "Trần Gia Huy",
+      "email": "student10002@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10003",
+      "studentId": "10003",
+      "name": "Lê Thảo Nguyên",
+      "email": "student10003@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10004",
+      "studentId": "10004",
+      "name": "Sinh viên mẫu 4",
+      "email": "student10004@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10005",
+      "studentId": "10005",
+      "name": "Sinh viên mẫu 5",
+      "email": "student10005@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10006",
+      "studentId": "10006",
+      "name": "Sinh viên mẫu 6",
+      "email": "student10006@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10007",
+      "studentId": "10007",
+      "name": "Sinh viên mẫu 7",
+      "email": "student10007@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10008",
+      "studentId": "10008",
+      "name": "Sinh viên mẫu 8",
+      "email": "student10008@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10009",
+      "studentId": "10009",
+      "name": "Sinh viên mẫu 9",
+      "email": "student10009@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10010",
+      "studentId": "10010",
+      "name": "Sinh viên mẫu 10",
+      "email": "student10010@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10011",
+      "studentId": "10011",
+      "name": "Sinh viên mẫu 11",
+      "email": "student10011@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10012",
+      "studentId": "10012",
+      "name": "Sinh viên mẫu 12",
+      "email": "student10012@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10013",
+      "studentId": "10013",
+      "name": "Sinh viên mẫu 13",
+      "email": "student10013@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10014",
+      "studentId": "10014",
+      "name": "Sinh viên mẫu 14",
+      "email": "student10014@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10015",
+      "studentId": "10015",
+      "name": "Sinh viên mẫu 15",
+      "email": "student10015@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10016",
+      "studentId": "10016",
+      "name": "Sinh viên mẫu 16",
+      "email": "student10016@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10017",
+      "studentId": "10017",
+      "name": "Sinh viên mẫu 17",
+      "email": "student10017@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10018",
+      "studentId": "10018",
+      "name": "Sinh viên mẫu 18",
+      "email": "student10018@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10019",
+      "studentId": "10019",
+      "name": "Sinh viên mẫu 19",
+      "email": "student10019@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10020",
+      "studentId": "10020",
+      "name": "Sinh viên mẫu 20",
+      "email": "student10020@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10021",
+      "studentId": "10021",
+      "name": "Sinh viên mẫu 21",
+      "email": "student10021@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10022",
+      "studentId": "10022",
+      "name": "Sinh viên mẫu 22",
+      "email": "student10022@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10023",
+      "studentId": "10023",
+      "name": "Sinh viên mẫu 23",
+      "email": "student10023@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10024",
+      "studentId": "10024",
+      "name": "Sinh viên mẫu 24",
+      "email": "student10024@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10025",
+      "studentId": "10025",
+      "name": "Sinh viên mẫu 25",
+      "email": "student10025@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10026",
+      "studentId": "10026",
+      "name": "Sinh viên mẫu 26",
+      "email": "student10026@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10027",
+      "studentId": "10027",
+      "name": "Sinh viên mẫu 27",
+      "email": "student10027@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10028",
+      "studentId": "10028",
+      "name": "Sinh viên mẫu 28",
+      "email": "student10028@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10029",
+      "studentId": "10029",
+      "name": "Sinh viên mẫu 29",
+      "email": "student10029@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10030",
+      "studentId": "10030",
+      "name": "Sinh viên mẫu 30",
+      "email": "student10030@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10031",
+      "studentId": "10031",
+      "name": "Sinh viên mẫu 31",
+      "email": "student10031@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10032",
+      "studentId": "10032",
+      "name": "Sinh viên mẫu 32",
+      "email": "student10032@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10033",
+      "studentId": "10033",
+      "name": "Sinh viên mẫu 33",
+      "email": "student10033@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10034",
+      "studentId": "10034",
+      "name": "Sinh viên mẫu 34",
+      "email": "student10034@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10035",
+      "studentId": "10035",
+      "name": "Sinh viên mẫu 35",
+      "email": "student10035@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10036",
+      "studentId": "10036",
+      "name": "Sinh viên mẫu 36",
+      "email": "student10036@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10037",
+      "studentId": "10037",
+      "name": "Sinh viên mẫu 37",
+      "email": "student10037@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10038",
+      "studentId": "10038",
+      "name": "Sinh viên mẫu 38",
+      "email": "student10038@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10039",
+      "studentId": "10039",
+      "name": "Sinh viên mẫu 39",
+      "email": "student10039@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10040",
+      "studentId": "10040",
+      "name": "Sinh viên mẫu 40",
+      "email": "student10040@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10041",
+      "studentId": "10041",
+      "name": "Sinh viên mẫu 41",
+      "email": "student10041@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10042",
+      "studentId": "10042",
+      "name": "Sinh viên mẫu 42",
+      "email": "student10042@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10043",
+      "studentId": "10043",
+      "name": "Sinh viên mẫu 43",
+      "email": "student10043@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10044",
+      "studentId": "10044",
+      "name": "Sinh viên mẫu 44",
+      "email": "student10044@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10045",
+      "studentId": "10045",
+      "name": "Sinh viên mẫu 45",
+      "email": "student10045@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10046",
+      "studentId": "10046",
+      "name": "Sinh viên mẫu 46",
+      "email": "student10046@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10047",
+      "studentId": "10047",
+      "name": "Sinh viên mẫu 47",
+      "email": "student10047@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10048",
+      "studentId": "10048",
+      "name": "Sinh viên mẫu 48",
+      "email": "student10048@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10049",
+      "studentId": "10049",
+      "name": "Sinh viên mẫu 49",
+      "email": "student10049@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10050",
+      "studentId": "10050",
+      "name": "Sinh viên mẫu 50",
+      "email": "student10050@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10051",
+      "studentId": "10051",
+      "name": "Sinh viên mẫu 51",
+      "email": "student10051@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10052",
+      "studentId": "10052",
+      "name": "Sinh viên mẫu 52",
+      "email": "student10052@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10053",
+      "studentId": "10053",
+      "name": "Sinh viên mẫu 53",
+      "email": "student10053@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10054",
+      "studentId": "10054",
+      "name": "Sinh viên mẫu 54",
+      "email": "student10054@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10055",
+      "studentId": "10055",
+      "name": "Sinh viên mẫu 55",
+      "email": "student10055@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10056",
+      "studentId": "10056",
+      "name": "Sinh viên mẫu 56",
+      "email": "student10056@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10057",
+      "studentId": "10057",
+      "name": "Sinh viên mẫu 57",
+      "email": "student10057@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10058",
+      "studentId": "10058",
+      "name": "Sinh viên mẫu 58",
+      "email": "student10058@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10059",
+      "studentId": "10059",
+      "name": "Sinh viên mẫu 59",
+      "email": "student10059@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10060",
+      "studentId": "10060",
+      "name": "Sinh viên mẫu 60",
+      "email": "student10060@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10061",
+      "studentId": "10061",
+      "name": "Sinh viên mẫu 61",
+      "email": "student10061@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10062",
+      "studentId": "10062",
+      "name": "Sinh viên mẫu 62",
+      "email": "student10062@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10063",
+      "studentId": "10063",
+      "name": "Sinh viên mẫu 63",
+      "email": "student10063@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10064",
+      "studentId": "10064",
+      "name": "Sinh viên mẫu 64",
+      "email": "student10064@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10065",
+      "studentId": "10065",
+      "name": "Sinh viên mẫu 65",
+      "email": "student10065@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10066",
+      "studentId": "10066",
+      "name": "Sinh viên mẫu 66",
+      "email": "student10066@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10067",
+      "studentId": "10067",
+      "name": "Sinh viên mẫu 67",
+      "email": "student10067@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10068",
+      "studentId": "10068",
+      "name": "Sinh viên mẫu 68",
+      "email": "student10068@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10069",
+      "studentId": "10069",
+      "name": "Sinh viên mẫu 69",
+      "email": "student10069@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10070",
+      "studentId": "10070",
+      "name": "Sinh viên mẫu 70",
+      "email": "student10070@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10071",
+      "studentId": "10071",
+      "name": "Sinh viên mẫu 71",
+      "email": "student10071@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10072",
+      "studentId": "10072",
+      "name": "Sinh viên mẫu 72",
+      "email": "student10072@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10073",
+      "studentId": "10073",
+      "name": "Sinh viên mẫu 73",
+      "email": "student10073@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10074",
+      "studentId": "10074",
+      "name": "Sinh viên mẫu 74",
+      "email": "student10074@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10075",
+      "studentId": "10075",
+      "name": "Sinh viên mẫu 75",
+      "email": "student10075@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10076",
+      "studentId": "10076",
+      "name": "Sinh viên mẫu 76",
+      "email": "student10076@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10077",
+      "studentId": "10077",
+      "name": "Sinh viên mẫu 77",
+      "email": "student10077@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10078",
+      "studentId": "10078",
+      "name": "Sinh viên mẫu 78",
+      "email": "student10078@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10079",
+      "studentId": "10079",
+      "name": "Sinh viên mẫu 79",
+      "email": "student10079@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10080",
+      "studentId": "10080",
+      "name": "Sinh viên mẫu 80",
+      "email": "student10080@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10081",
+      "studentId": "10081",
+      "name": "Sinh viên mẫu 81",
+      "email": "student10081@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10082",
+      "studentId": "10082",
+      "name": "Sinh viên mẫu 82",
+      "email": "student10082@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10083",
+      "studentId": "10083",
+      "name": "Sinh viên mẫu 83",
+      "email": "student10083@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10084",
+      "studentId": "10084",
+      "name": "Sinh viên mẫu 84",
+      "email": "student10084@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10085",
+      "studentId": "10085",
+      "name": "Sinh viên mẫu 85",
+      "email": "student10085@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10086",
+      "studentId": "10086",
+      "name": "Sinh viên mẫu 86",
+      "email": "student10086@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10087",
+      "studentId": "10087",
+      "name": "Sinh viên mẫu 87",
+      "email": "student10087@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10088",
+      "studentId": "10088",
+      "name": "Sinh viên mẫu 88",
+      "email": "student10088@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10089",
+      "studentId": "10089",
+      "name": "Sinh viên mẫu 89",
+      "email": "student10089@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10090",
+      "studentId": "10090",
+      "name": "Sinh viên mẫu 90",
+      "email": "student10090@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10091",
+      "studentId": "10091",
+      "name": "Sinh viên mẫu 91",
+      "email": "student10091@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10092",
+      "studentId": "10092",
+      "name": "Sinh viên mẫu 92",
+      "email": "student10092@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10093",
+      "studentId": "10093",
+      "name": "Sinh viên mẫu 93",
+      "email": "student10093@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10094",
+      "studentId": "10094",
+      "name": "Sinh viên mẫu 94",
+      "email": "student10094@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10095",
+      "studentId": "10095",
+      "name": "Sinh viên mẫu 95",
+      "email": "student10095@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10096",
+      "studentId": "10096",
+      "name": "Sinh viên mẫu 96",
+      "email": "student10096@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10097",
+      "studentId": "10097",
+      "name": "Sinh viên mẫu 97",
+      "email": "student10097@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10098",
+      "studentId": "10098",
+      "name": "Sinh viên mẫu 98",
+      "email": "student10098@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10099",
+      "studentId": "10099",
+      "name": "Sinh viên mẫu 99",
+      "email": "student10099@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10100",
+      "studentId": "10100",
+      "name": "Sinh viên mẫu 100",
+      "email": "student10100@example.test",
+      "role": "student"
+    }
+  ],
+  "users": [
+    {
+      "id": "stu-10001",
+      "studentId": "10001",
+      "name": "Nguyễn Minh Anh",
+      "email": "student10001@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10002",
+      "studentId": "10002",
+      "name": "Trần Gia Huy",
+      "email": "student10002@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10003",
+      "studentId": "10003",
+      "name": "Lê Thảo Nguyên",
+      "email": "student10003@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10004",
+      "studentId": "10004",
+      "name": "Sinh viên mẫu 4",
+      "email": "student10004@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10005",
+      "studentId": "10005",
+      "name": "Sinh viên mẫu 5",
+      "email": "student10005@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10006",
+      "studentId": "10006",
+      "name": "Sinh viên mẫu 6",
+      "email": "student10006@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10007",
+      "studentId": "10007",
+      "name": "Sinh viên mẫu 7",
+      "email": "student10007@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10008",
+      "studentId": "10008",
+      "name": "Sinh viên mẫu 8",
+      "email": "student10008@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10009",
+      "studentId": "10009",
+      "name": "Sinh viên mẫu 9",
+      "email": "student10009@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10010",
+      "studentId": "10010",
+      "name": "Sinh viên mẫu 10",
+      "email": "student10010@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10011",
+      "studentId": "10011",
+      "name": "Sinh viên mẫu 11",
+      "email": "student10011@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10012",
+      "studentId": "10012",
+      "name": "Sinh viên mẫu 12",
+      "email": "student10012@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10013",
+      "studentId": "10013",
+      "name": "Sinh viên mẫu 13",
+      "email": "student10013@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10014",
+      "studentId": "10014",
+      "name": "Sinh viên mẫu 14",
+      "email": "student10014@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10015",
+      "studentId": "10015",
+      "name": "Sinh viên mẫu 15",
+      "email": "student10015@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10016",
+      "studentId": "10016",
+      "name": "Sinh viên mẫu 16",
+      "email": "student10016@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10017",
+      "studentId": "10017",
+      "name": "Sinh viên mẫu 17",
+      "email": "student10017@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10018",
+      "studentId": "10018",
+      "name": "Sinh viên mẫu 18",
+      "email": "student10018@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10019",
+      "studentId": "10019",
+      "name": "Sinh viên mẫu 19",
+      "email": "student10019@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10020",
+      "studentId": "10020",
+      "name": "Sinh viên mẫu 20",
+      "email": "student10020@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10021",
+      "studentId": "10021",
+      "name": "Sinh viên mẫu 21",
+      "email": "student10021@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10022",
+      "studentId": "10022",
+      "name": "Sinh viên mẫu 22",
+      "email": "student10022@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10023",
+      "studentId": "10023",
+      "name": "Sinh viên mẫu 23",
+      "email": "student10023@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10024",
+      "studentId": "10024",
+      "name": "Sinh viên mẫu 24",
+      "email": "student10024@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10025",
+      "studentId": "10025",
+      "name": "Sinh viên mẫu 25",
+      "email": "student10025@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10026",
+      "studentId": "10026",
+      "name": "Sinh viên mẫu 26",
+      "email": "student10026@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10027",
+      "studentId": "10027",
+      "name": "Sinh viên mẫu 27",
+      "email": "student10027@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10028",
+      "studentId": "10028",
+      "name": "Sinh viên mẫu 28",
+      "email": "student10028@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10029",
+      "studentId": "10029",
+      "name": "Sinh viên mẫu 29",
+      "email": "student10029@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10030",
+      "studentId": "10030",
+      "name": "Sinh viên mẫu 30",
+      "email": "student10030@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10031",
+      "studentId": "10031",
+      "name": "Sinh viên mẫu 31",
+      "email": "student10031@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10032",
+      "studentId": "10032",
+      "name": "Sinh viên mẫu 32",
+      "email": "student10032@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10033",
+      "studentId": "10033",
+      "name": "Sinh viên mẫu 33",
+      "email": "student10033@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10034",
+      "studentId": "10034",
+      "name": "Sinh viên mẫu 34",
+      "email": "student10034@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10035",
+      "studentId": "10035",
+      "name": "Sinh viên mẫu 35",
+      "email": "student10035@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10036",
+      "studentId": "10036",
+      "name": "Sinh viên mẫu 36",
+      "email": "student10036@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10037",
+      "studentId": "10037",
+      "name": "Sinh viên mẫu 37",
+      "email": "student10037@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10038",
+      "studentId": "10038",
+      "name": "Sinh viên mẫu 38",
+      "email": "student10038@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10039",
+      "studentId": "10039",
+      "name": "Sinh viên mẫu 39",
+      "email": "student10039@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10040",
+      "studentId": "10040",
+      "name": "Sinh viên mẫu 40",
+      "email": "student10040@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10041",
+      "studentId": "10041",
+      "name": "Sinh viên mẫu 41",
+      "email": "student10041@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10042",
+      "studentId": "10042",
+      "name": "Sinh viên mẫu 42",
+      "email": "student10042@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10043",
+      "studentId": "10043",
+      "name": "Sinh viên mẫu 43",
+      "email": "student10043@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10044",
+      "studentId": "10044",
+      "name": "Sinh viên mẫu 44",
+      "email": "student10044@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10045",
+      "studentId": "10045",
+      "name": "Sinh viên mẫu 45",
+      "email": "student10045@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10046",
+      "studentId": "10046",
+      "name": "Sinh viên mẫu 46",
+      "email": "student10046@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10047",
+      "studentId": "10047",
+      "name": "Sinh viên mẫu 47",
+      "email": "student10047@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10048",
+      "studentId": "10048",
+      "name": "Sinh viên mẫu 48",
+      "email": "student10048@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10049",
+      "studentId": "10049",
+      "name": "Sinh viên mẫu 49",
+      "email": "student10049@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10050",
+      "studentId": "10050",
+      "name": "Sinh viên mẫu 50",
+      "email": "student10050@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10051",
+      "studentId": "10051",
+      "name": "Sinh viên mẫu 51",
+      "email": "student10051@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10052",
+      "studentId": "10052",
+      "name": "Sinh viên mẫu 52",
+      "email": "student10052@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10053",
+      "studentId": "10053",
+      "name": "Sinh viên mẫu 53",
+      "email": "student10053@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10054",
+      "studentId": "10054",
+      "name": "Sinh viên mẫu 54",
+      "email": "student10054@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10055",
+      "studentId": "10055",
+      "name": "Sinh viên mẫu 55",
+      "email": "student10055@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10056",
+      "studentId": "10056",
+      "name": "Sinh viên mẫu 56",
+      "email": "student10056@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10057",
+      "studentId": "10057",
+      "name": "Sinh viên mẫu 57",
+      "email": "student10057@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10058",
+      "studentId": "10058",
+      "name": "Sinh viên mẫu 58",
+      "email": "student10058@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10059",
+      "studentId": "10059",
+      "name": "Sinh viên mẫu 59",
+      "email": "student10059@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10060",
+      "studentId": "10060",
+      "name": "Sinh viên mẫu 60",
+      "email": "student10060@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10061",
+      "studentId": "10061",
+      "name": "Sinh viên mẫu 61",
+      "email": "student10061@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10062",
+      "studentId": "10062",
+      "name": "Sinh viên mẫu 62",
+      "email": "student10062@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10063",
+      "studentId": "10063",
+      "name": "Sinh viên mẫu 63",
+      "email": "student10063@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10064",
+      "studentId": "10064",
+      "name": "Sinh viên mẫu 64",
+      "email": "student10064@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10065",
+      "studentId": "10065",
+      "name": "Sinh viên mẫu 65",
+      "email": "student10065@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10066",
+      "studentId": "10066",
+      "name": "Sinh viên mẫu 66",
+      "email": "student10066@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10067",
+      "studentId": "10067",
+      "name": "Sinh viên mẫu 67",
+      "email": "student10067@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10068",
+      "studentId": "10068",
+      "name": "Sinh viên mẫu 68",
+      "email": "student10068@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10069",
+      "studentId": "10069",
+      "name": "Sinh viên mẫu 69",
+      "email": "student10069@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10070",
+      "studentId": "10070",
+      "name": "Sinh viên mẫu 70",
+      "email": "student10070@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10071",
+      "studentId": "10071",
+      "name": "Sinh viên mẫu 71",
+      "email": "student10071@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10072",
+      "studentId": "10072",
+      "name": "Sinh viên mẫu 72",
+      "email": "student10072@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10073",
+      "studentId": "10073",
+      "name": "Sinh viên mẫu 73",
+      "email": "student10073@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10074",
+      "studentId": "10074",
+      "name": "Sinh viên mẫu 74",
+      "email": "student10074@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10075",
+      "studentId": "10075",
+      "name": "Sinh viên mẫu 75",
+      "email": "student10075@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10076",
+      "studentId": "10076",
+      "name": "Sinh viên mẫu 76",
+      "email": "student10076@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10077",
+      "studentId": "10077",
+      "name": "Sinh viên mẫu 77",
+      "email": "student10077@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10078",
+      "studentId": "10078",
+      "name": "Sinh viên mẫu 78",
+      "email": "student10078@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10079",
+      "studentId": "10079",
+      "name": "Sinh viên mẫu 79",
+      "email": "student10079@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10080",
+      "studentId": "10080",
+      "name": "Sinh viên mẫu 80",
+      "email": "student10080@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10081",
+      "studentId": "10081",
+      "name": "Sinh viên mẫu 81",
+      "email": "student10081@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10082",
+      "studentId": "10082",
+      "name": "Sinh viên mẫu 82",
+      "email": "student10082@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10083",
+      "studentId": "10083",
+      "name": "Sinh viên mẫu 83",
+      "email": "student10083@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10084",
+      "studentId": "10084",
+      "name": "Sinh viên mẫu 84",
+      "email": "student10084@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10085",
+      "studentId": "10085",
+      "name": "Sinh viên mẫu 85",
+      "email": "student10085@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10086",
+      "studentId": "10086",
+      "name": "Sinh viên mẫu 86",
+      "email": "student10086@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10087",
+      "studentId": "10087",
+      "name": "Sinh viên mẫu 87",
+      "email": "student10087@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10088",
+      "studentId": "10088",
+      "name": "Sinh viên mẫu 88",
+      "email": "student10088@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10089",
+      "studentId": "10089",
+      "name": "Sinh viên mẫu 89",
+      "email": "student10089@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10090",
+      "studentId": "10090",
+      "name": "Sinh viên mẫu 90",
+      "email": "student10090@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10091",
+      "studentId": "10091",
+      "name": "Sinh viên mẫu 91",
+      "email": "student10091@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10092",
+      "studentId": "10092",
+      "name": "Sinh viên mẫu 92",
+      "email": "student10092@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10093",
+      "studentId": "10093",
+      "name": "Sinh viên mẫu 93",
+      "email": "student10093@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10094",
+      "studentId": "10094",
+      "name": "Sinh viên mẫu 94",
+      "email": "student10094@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10095",
+      "studentId": "10095",
+      "name": "Sinh viên mẫu 95",
+      "email": "student10095@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10096",
+      "studentId": "10096",
+      "name": "Sinh viên mẫu 96",
+      "email": "student10096@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10097",
+      "studentId": "10097",
+      "name": "Sinh viên mẫu 97",
+      "email": "student10097@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10098",
+      "studentId": "10098",
+      "name": "Sinh viên mẫu 98",
+      "email": "student10098@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10099",
+      "studentId": "10099",
+      "name": "Sinh viên mẫu 99",
+      "email": "student10099@example.test",
+      "role": "student"
+    },
+    {
+      "id": "stu-10100",
+      "studentId": "10100",
+      "name": "Sinh viên mẫu 100",
+      "email": "student10100@example.test",
+      "role": "student"
+    },
+    {
+      "id": "org-1",
+      "name": "Ban tổ chức · CLB Công nghệ",
+      "email": "organizer@example.test",
+      "role": "organizer"
+    },
+    {
+      "id": "admin-1",
+      "name": "Quản trị viên mẫu",
+      "email": "admin@example.test",
+      "role": "administrator"
+    },
+    {
+      "id": "org-2",
+      "name": "Ban hoạt động sinh viên",
+      "email": "organizer2@example.test",
+      "role": "organizer"
+    }
+  ],
+  "events": [
+    {
+      "id": "cloud-lab",
+      "title": "Cloud Computing: Từ ý tưởng đến ứng dụng",
+      "category": "Công nghệ",
+      "format": "Workshop",
+      "startsAt": "2026-11-14T08:30:00+07:00",
+      "endsAt": "2026-11-14T11:30:00+07:00",
+      "venue": "Phòng thực hành B.302",
+      "capacity": 20,
+      "baseRegistered": 0,
+      "organizerId": "org-1",
+      "organizer": "CLB Công nghệ",
+      "theme": "cloud",
+      "artwork": [
+        "CLOUD",
+        "CONNECT."
+      ],
+      "description": "Đưa ứng dụng đầu tiên của bạn lên đám mây. Một buổi thực hành để hiểu cách dịch vụ cloud kết nối với nhau.",
+      "about": "Bạn sẽ đi từ một ý tưởng nhỏ đến bản ứng dụng có thể truy cập trên trình duyệt, tìm hiểu vai trò của máy chủ, cơ sở dữ liệu và quá trình triển khai. Buổi học ưu tiên thực hành từng bước, phù hợp với sinh viên đang bắt đầu môn Điện toán đám mây.",
+      "agenda": [
+        "08:30 · Làm quen với kiến trúc ứng dụng cloud",
+        "09:15 · Thực hành triển khai ứng dụng mẫu",
+        "10:30 · Thử nghiệm, chia sẻ và hỏi đáp"
+      ],
+      "note": "Mang theo laptop và sạc. Có mặt trước giờ bắt đầu 10 phút.",
+      "speaker": "Đội ngũ CLB Công nghệ"
+    },
+    {
+      "id": "ai-campus",
+      "title": "AI & Bạn: Học thông minh, làm sáng tạo",
+      "category": "Công nghệ",
+      "format": "Talkshow",
+      "startsAt": "2026-11-15T14:00:00+07:00",
+      "endsAt": "2026-11-15T16:00:00+07:00",
+      "venue": "Hội trường A",
+      "capacity": 120,
+      "baseRegistered": 86,
+      "organizerId": "org-1",
+      "organizer": "CLB Công nghệ",
+      "theme": "ai",
+      "artwork": [
+        "MAKE",
+        "IT SMART."
+      ],
+      "description": "Gặp gỡ những góc nhìn mới về AI, việc học và những dự án sinh viên bạn có thể bắt đầu ngay.",
+      "about": "Cùng khám phá các ví dụ ứng dụng AI vào việc học và sáng tạo sản phẩm. Diễn giả sẽ chia sẻ cách đặt vấn đề, kiểm chứng kết quả và xây dựng thói quen học tập chủ động.",
+      "agenda": [
+        "14:00 · AI trong trải nghiệm học tập",
+        "14:45 · Chia sẻ các dự án sinh viên",
+        "15:30 · Hỏi đáp cùng khách mời"
+      ],
+      "note": "Chuẩn bị một câu hỏi hoặc một ý tưởng bạn muốn thảo luận.",
+      "speaker": "Khách mời từ cộng đồng công nghệ"
+    },
+    {
+      "id": "career-kit",
+      "title": "CV không chỉ là một tờ giấy",
+      "category": "Kỹ năng",
+      "format": "Workshop",
+      "startsAt": "2026-11-17T09:00:00+07:00",
+      "endsAt": "2026-11-17T11:00:00+07:00",
+      "venue": "Không gian sáng tạo C.201",
+      "capacity": 60,
+      "baseRegistered": 42,
+      "organizerId": "org-2",
+      "organizer": "Trung tâm Hỗ trợ sinh viên",
+      "theme": "career",
+      "artwork": [
+        "YOUR",
+        "NEXT MOVE."
+      ],
+      "description": "Biến trải nghiệm học tập và hoạt động của bạn thành một câu chuyện nghề nghiệp rõ ràng.",
+      "about": "Thực hành xây dựng cấu trúc CV, chọn trải nghiệm phù hợp và chuẩn bị phần giới thiệu bản thân. Bạn có thể mang bản CV hiện tại để tự rà soát trong buổi học.",
+      "agenda": [
+        "09:00 · Cấu trúc một CV dễ đọc",
+        "09:45 · Thực hành và góp ý",
+        "10:30 · Hỏi đáp về cơ hội thực tập"
+      ],
+      "note": "Mang theo laptop hoặc bản CV bạn đang sử dụng.",
+      "speaker": "Đội ngũ Hỗ trợ nghề nghiệp"
+    },
+    {
+      "id": "hack-day",
+      "title": "Build Together: Một ngày, một sản phẩm",
+      "category": "Công nghệ",
+      "format": "Hackathon",
+      "startsAt": "2026-11-18T08:00:00+07:00",
+      "endsAt": "2026-11-18T17:00:00+07:00",
+      "venue": "Innovation Hub · Tầng 2",
+      "capacity": 40,
+      "baseRegistered": 40,
+      "organizerId": "org-1",
+      "organizer": "CLB Công nghệ",
+      "theme": "hack",
+      "artwork": [
+        "BUILD",
+        "TOGETHER."
+      ],
+      "description": "Lập đội, chọn một vấn đề trong trường và cùng xây dựng giải pháp trong một ngày.",
+      "about": "Một ngày làm sản phẩm với sự hỗ trợ của các anh chị hướng dẫn. Hoạt động khuyến khích thử nghiệm, chia sẻ và học từ đồng đội.",
+      "agenda": [
+        "08:00 · Nhận chủ đề và lập đội",
+        "09:00 · Xây dựng sản phẩm",
+        "15:30 · Trình diễn và chia sẻ"
+      ],
+      "note": "Sự kiện hiện đã hết chỗ. Bạn vẫn có thể xem thông tin chương trình.",
+      "speaker": "Cộng đồng phát triển sản phẩm"
+    },
+    {
+      "id": "open-mic",
+      "title": "Sân khấu mở: Câu chuyện của chúng mình",
+      "category": "Văn hóa",
+      "format": "Giao lưu",
+      "startsAt": "2026-11-20T18:00:00+07:00",
+      "endsAt": "2026-11-20T20:30:00+07:00",
+      "venue": "Sân trường · Khu A",
+      "capacity": 180,
+      "baseRegistered": 110,
+      "organizerId": "org-2",
+      "organizer": "CLB Văn nghệ",
+      "theme": "music",
+      "artwork": [
+        "FIND",
+        "YOUR VOICE."
+      ],
+      "description": "Một buổi tối dành cho âm nhạc, câu chuyện và những kết nối mới trong cộng đồng sinh viên.",
+      "about": "Gặp gỡ những người bạn có cùng đam mê nghệ thuật, lắng nghe các tiết mục và chia sẻ câu chuyện sinh viên của bạn trong một không gian gần gũi.",
+      "agenda": [
+        "18:00 · Đón khách",
+        "18:30 · Âm nhạc và chia sẻ",
+        "20:00 · Giao lưu cộng đồng"
+      ],
+      "note": "Mang theo tinh thần cởi mở và một người bạn nếu bạn muốn.",
+      "speaker": "CLB Văn nghệ và các nhóm sinh viên"
+    },
+    {
+      "id": "green-campus",
+      "title": "Một buổi sáng xanh hơn",
+      "category": "Cộng đồng",
+      "format": "Hoạt động",
+      "startsAt": "2026-11-22T07:30:00+07:00",
+      "endsAt": "2026-11-22T10:00:00+07:00",
+      "venue": "Cổng chính · Khuôn viên trường",
+      "capacity": 100,
+      "baseRegistered": 67,
+      "organizerId": "org-2",
+      "organizer": "Đội Sinh viên tình nguyện",
+      "theme": "green",
+      "artwork": [
+        "SMALL ACTS.",
+        "BIG CHANGE."
+      ],
+      "description": "Cùng chăm sóc không gian chung và góp một hành động nhỏ cho một khuôn viên xanh hơn.",
+      "about": "Tham gia hoạt động cộng đồng trong khuôn viên trường, tìm hiểu cách phân loại rác và cùng tạo nên một buổi sáng ý nghĩa với bạn bè.",
+      "agenda": [
+        "07:30 · Tập trung và chia nhóm",
+        "08:00 · Hoạt động theo khu vực",
+        "09:30 · Tổng kết và chia sẻ"
+      ],
+      "note": "Mặc trang phục thuận tiện, mang theo bình nước cá nhân.",
+      "speaker": "Đội Sinh viên tình nguyện"
+    }
+  ]
+}

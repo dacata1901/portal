@@ -1,0 +1,4 @@
+npm test: 13/13 đạt, 0 lỗi (bao gồm xuất bản sự kiện trong API mock).
+npm run check: đạt.
+Kiểm tra trình duyệt localhost: ban tổ chức tạo sự kiện 7 chỗ; sự kiện xuất hiện
+trong catalog, dashboard hiển thị 0/7 đã đăng ký và 7 chỗ còn lại.

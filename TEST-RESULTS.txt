@@ -1,0 +1,16 @@
+Backend, Accounts, Security & IaC: 40/40 tests đạt, 0 lỗi (py -3 -m unittest discover -s tests -p "test_*.py" -v).
+Frontend & Client Adapter: 20/20 tests đạt, 0 lỗi (npm.cmd test && npm.cmd run check).
+- 100 yêu cầu đồng thời tranh 20 chỗ: đúng 20 thành công, 80 hết chỗ.
+- Đăng ký/đăng nhập tài khoản sinh viên (scrypt password hash, HttpOnly + SameSite=Strict session cookie, CSRF token, rate limit): đạt.
+- Chỉnh sửa sự kiện (organizer/admin ownership, capacity guard, idempotent replay): đạt.
+- Xuất CSV riêng tư (UTF-8 BOM, formula neutralization, ownership-scoped): đạt.
+- HTTP publish/replay, healthz/readyz, mất phản hồi sau commit và restart/replay: đạt.
+- Ràng buộc DB, rollback, quyền, hủy đồng thời và idempotency: đạt.
+- Cognito access token RS256, role group mapping và từ chối X-Demo-User ở chế độ cognito: đạt.
+- Backup/restore kiểm tra sha256 checksum (bao gồm account_credentials) và audit toàn vẹn: đạt.
+- Kiểm tra CloudFormation IaC (VPC, EC2, EBS, Cognito, RDS, CloudWatch) và benchmark Phần E: đạt.
+
+Part E HTTP Benchmark (scripts/benchmark_e.py -> BENCHMARK-E-RESULTS.json):
+- E1 (100 concurrent HTTP registrations): 20 HTTP 201, 80 HTTP 409 EVENT_FULL (p50=111.376ms, p95=609.107ms, p99=773.499ms).
+- E2 (X-Drop-After-Commit + 10x HTTP retry): 10/10 HTTP 201 với Idempotency-Replayed=true, remainingCapacity=33.
+- E3 (20 concurrent cancellations + conflict check): 20/20 HTTP 200, xung đột khóa trả 409 IDEMPOTENCY_CONFLICT; auditBefore/auditAfter ok=true.
