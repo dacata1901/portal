@@ -13,6 +13,7 @@ from backend.settings import database_target,auto_migrate
 from backend import telemetry
 from backend.storage import configured_store,create_export,object_key,ObjectUnavailable
 from backend.event_updates import update_event
+from backend import admin as admin_api
 DB=database_target(ROOT)
 IS_POSTGRES=DB.startswith(('postgresql://','postgres://'))
 if IS_POSTGRES:
@@ -154,6 +155,17 @@ class Handler(SimpleHTTPRequestHandler):
                     raise AccountError(403,'INVALID_CSRF','Phiên bảo vệ không hợp lệ. Hãy tải lại trang rồi thử lại.')
                 accounts.revoke(token)
                 return self.reply(200,dict(user=None,csrfToken=None),cookie=self.session_cookie())
+            if path=='/api/auth/change-password':
+                token=self.cookie_token()
+                active=accounts.session(token)
+                if not active:
+                    raise AccountError(401,'UNAUTHENTICATED','Vui lòng đăng nhập lại để đổi mật khẩu.')
+                if not valid_csrf(active['csrfToken'],self.headers.get('X-CSRF-Token','')):
+                    raise AccountError(403,'INVALID_CSRF','Phiên bảo vệ không hợp lệ. Hãy tải lại trang rồi thử lại.')
+                accounts.rate_limit(self.client_address[0],'login')
+                accounts.change_password(active['user']['id'],payload)
+                new_token,new_csrf=accounts.create_session(active['user']['id'])
+                return self.reply(200,dict(user=active['user'],csrfToken=new_csrf,changed=True),cookie=self.session_cookie(new_token))
             action='register' if path=='/api/auth/register' else 'login'
             accounts.rate_limit(self.client_address[0],action)
             user=accounts.register(payload) if action=='register' else accounts.login(payload)
@@ -165,6 +177,48 @@ class Handler(SimpleHTTPRequestHandler):
         except database.DatabaseError:
             self.log_error('Account request failed; database error')
             return self.reply(503,dict(code='ACCOUNT_UNAVAILABLE',message='Chưa thể xử lý tài khoản. Vui lòng thử lại.'))
+    def admin_request(self,path):
+        try:
+            try: identity=self.request_identity()
+            except AuthenticationError as exc: return self.reply(401,dict(message=str(exc)))
+            if identity.get('groups') is not None and 'Administrators' not in identity['groups']:
+                return self.reply(403,dict(message='Chỉ quản trị viên mới có quyền thực hiện thao tác này.'))
+            c=connect(DB)
+            try: u=c.execute(f'SELECT role FROM users WHERE id={P}',(identity['user_id'],)).fetchone()
+            finally: c.close()
+            if not u: return self.reply(401,dict(message='Vui lòng đăng nhập'))
+            if not identity_matches_role(identity,u['role']) or u['role']!='administrator':
+                return self.reply(403,dict(message='Chỉ quản trị viên mới có quyền thực hiện thao tác này.'))
+            if self.command=='GET' and path=='/api/admin/students':
+                return self.reply(200,admin_api.list_students(database,DB,P))
+            if self.command!='POST':
+                return self.reply(404,dict(message='Không tìm thấy API'))
+            size=int(self.headers.get('Content-Length','0'))
+            if not 0<=size<=16384: raise AccountError(400,'INVALID_BODY','Kích thước nội dung không hợp lệ.')
+            payload=json.loads(self.rfile.read(size)) if size>0 else {}
+            if path=='/api/admin/students':
+                return self.reply(201,dict(student=admin_api.create_student(database,DB,payload,P)))
+            m_del_stu=re.fullmatch('/api/admin/students/([^/]+)/delete',path)
+            if m_del_stu:
+                return self.reply(200,admin_api.delete_student(database,DB,m_del_stu[1],P))
+            m_upd_stu=re.fullmatch('/api/admin/students/([^/]+)',path)
+            if m_upd_stu:
+                return self.reply(200,dict(student=admin_api.update_student(database,DB,m_upd_stu[1],payload,P)))
+            m_del_ev=re.fullmatch('/api/admin/events/([^/]+)/delete',path)
+            if m_del_ev:
+                return self.reply(200,admin_api.delete_event(database,DB,m_del_ev[1],P))
+            m_add_reg=re.fullmatch('/api/admin/events/([^/]+)/registrations',path)
+            if m_add_reg:
+                return self.reply(201,admin_api.add_student_to_event(database,DB,m_add_reg[1],payload.get('userId') if isinstance(payload,dict) else None,P))
+            m_rem_reg=re.fullmatch('/api/admin/registrations/([^/]+)/remove',path)
+            if m_rem_reg:
+                return self.reply(200,admin_api.remove_registration(database,DB,m_rem_reg[1],P))
+            return self.reply(404,dict(message='Không tìm thấy API'))
+        except AccountError as exc: return self.reply(exc.status,dict(code=exc.code,message=str(exc)))
+        except (ValueError,UnicodeError): return self.reply(400,dict(code='INVALID_BODY',message='JSON không hợp lệ'))
+        except database.DatabaseError:
+            self.log_error('Admin request failed; database error')
+            return self.reply(500,dict(message='Lỗi máy chủ khi xử lý yêu cầu quản trị.'))
     def script(self,data):
         raw=('window.CAMPUS_RUNTIME_CONFIG='+json.dumps(data,ensure_ascii=True)+';').encode()
         self.send_response(200); self.send_header('Content-Type','application/javascript; charset=utf-8'); self.send_header('Content-Length',str(len(raw))); self.send_header('Cache-Control','no-store'); self.end_headers(); self.wfile.write(raw)
@@ -201,6 +255,7 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.reply(503,dict(status='unavailable'))
             finally:
                 if c: c.close()
+        if p=='/api/admin/students': return self.admin_request(p)
         if not p.startswith('/api/'): return super().do_GET()
         # Session lookup can use the same limited PostgreSQL connection budget.
         # Complete it before holding the response's read transaction.
@@ -231,7 +286,8 @@ class Handler(SimpleHTTPRequestHandler):
         p=unquote(urlsplit(self.path).path)
         export=re.fullmatch('/api/organizer/events/([^/]+)/exports',p)
         if export:return self.export_request(export[1])
-        if p in ('/api/auth/register','/api/auth/login','/api/auth/logout'): return self.account_request(p)
+        if p in ('/api/auth/register','/api/auth/login','/api/auth/logout','/api/auth/change-password'): return self.account_request(p)
+        if p.startswith('/api/admin/'): return self.admin_request(p)
         m=re.fullmatch('/api/events/([^/]+)/registrations',p); n=re.fullmatch('/api/registrations/([^/]+)/cancel',p); q=p=='/api/organizer/events'; edit=re.fullmatch('/api/organizer/events/([^/]+)',p)
         if not (m or n or q or edit): return self.reply(404,dict(message='Không tìm thấy API'))
         try:

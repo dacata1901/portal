@@ -631,3 +631,12 @@ dialog::backdrop {
 .footer-inner p, .footer-inner > span {
   color: var(--muted);
 }
+
+/* Admin toolbar & row action groups */
+.toolbar-actions, .row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+

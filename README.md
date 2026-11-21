@@ -3,9 +3,9 @@
 **Campus Event Portal** là ứng dụng web quản lý và đăng ký sự kiện đại học chịu tải cao, chống đăng ký quá chỗ (race condition), hỗ trợ phân quyền chặt chẽ 3 vai trò, xác thực tài khoản an toàn và triển khai tự động theo mô hình **Multi-Cloud (Cloudflare Edge HTTPS + AWS Cloud)**.
 
 > 🌐 **Truy cập bản Demo trực tuyến 24/7 (Cloudflare HTTPS + AWS EC2 — mở được từ mọi mạng Wi-Fi/4G):**
-> - **Trang chủ ứng dụng:** https://gdp-strings-polymer-veteran.trycloudflare.com
-> - **Kiểm tra trạng thái hệ thống (`/readyz`):** https://gdp-strings-polymer-veteran.trycloudflare.com/readyz
-> - **API danh sách sự kiện (`/api/events`):** https://gdp-strings-polymer-veteran.trycloudflare.com/api/events
+> - **Trang chủ ứng dụng:** https://city-generous-printed-strengthening.trycloudflare.com
+> - **Kiểm tra trạng thái hệ thống (`/readyz`):** https://city-generous-printed-strengthening.trycloudflare.com/readyz
+> - **API danh sách sự kiện (`/api/events`):** https://city-generous-printed-strengthening.trycloudflare.com/api/events
 >
 > *(Lưu ý: Đường link `http://127.0.0.1:4173/` ở Mục 5 bên dưới chỉ dùng khi bạn tự chạy máy chủ trên máy tính cá nhân bằng lệnh `py -3 server.py`.)*
 
@@ -32,9 +32,11 @@
 - **Đăng ký / Hủy chỗ chuẩn giao dịch (Transactional & Idempotent):**
   - Xử lý an toàn **100 yêu cầu đồng thời tranh 20 chỗ** — chỉ đúng 20 sinh viên giữ chỗ thành công, 80 yêu cầu còn lại trả `409 EVENT_FULL`, tuyệt đối không âm chỗ hay tạo vé trùng.
   - Hỗ trợ **`Idempotency-Key`** giúp thử lại an toàn khi mất kết nối giữa chừng mà không bị trừ chỗ 2 lần.
-- **Quản lý sự kiện cho Ban tổ chức & Quản trị viên:**
-  - Tạo & xuất bản sự kiện mới, **chỉnh sửa thông tin/mô tả chi tiết sự kiện** đã xuất bản.
-  - Theo dõi sức chứa theo thời gian thực, xem danh sách sinh viên tham gia (roster) và **xuất danh sách CSV** (có UTF-8 BOM hiển thị chuẩn tiếng Việt trong Excel, chống CSV formula injection, hỗ trợ lưu trữ cục bộ hoặc **Amazon S3**).
+- **Quản trị toàn diện cho Quản trị viên & Ban tổ chức:**
+  - **Không còn dữ liệu đăng ký giả (`Sinh viên giả`):** Mọi sự kiện khởi tạo ở trạng thái sạch (`0` đăng ký ảo); số lượng sinh viên trong từng sự kiện phản ánh đúng 100% sinh viên thật đã đăng ký hoặc do Quản trị viên ghi danh.
+  - **Quản trị viên (`admin-1`):** Có quyền **Thêm, Sửa, Đặt lại mật khẩu, Xóa sinh viên** (`#/students`); **Thêm, Sửa, Xóa sự kiện** (`#/organizer`); và **Thêm trực tiếp sinh viên có sẵn vào sự kiện / Gỡ sinh viên khỏi sự kiện** (tự động cập nhật và hoàn lại chỗ trống).
+  - **Ban tổ chức (`org-1`, `org-2`):** Tạo & xuất bản sự kiện mới, chỉnh sửa thông tin sự kiện do mình phụ trách, xem danh sách sinh viên (roster) và **xuất danh sách CSV** (có UTF-8 BOM hiển thị chuẩn tiếng Việt trong Excel, chống CSV formula injection, hỗ trợ lưu trữ cục bộ hoặc **Amazon S3**).
+- **Sinh viên tự Đổi mật khẩu:** Người dùng đã đăng nhập có thể bấm vào tên tài khoản ở góc phải -> **Đổi mật khẩu** (`POST /api/auth/change-password`) với xác thực mật khẩu cũ và làm mới phiên an toàn.
 - **Giám sát, Telemetry & Sao lưu/Khôi phục:**
   - Cung cấp endpoint sức khỏe `/healthz`, sẵn sàng `/readyz`, gắn mã truy vết `X-Request-Id` và log cấu trúc JSON.
   - Sao lưu & khôi phục dữ liệu toàn vẹn có kiểm tra mã băm **`SHA-256`** và kiểm toán tự động (`audit`).
@@ -70,9 +72,9 @@ Hệ thống phân quyền chặt chẽ ở cả tầng **API Backend** (`server
 
 | Vai trò (`role`) | Nhóm AWS Cognito | Quyền được phép | Hành vi bị chặn (`401` / `403` / `404`) |
 | :--- | :--- | :--- | :--- |
-| **Sinh viên (`student`)** | `Students` | Xem danh mục sự kiện, đăng ký giữ chỗ, xem biên nhận & lịch sử của mình, tự hủy vé của mình. | Không tạo/sửa sự kiện; không xem roster hoặc xuất CSV; không hủy vé của người khác; không thể tự nâng quyền khi đăng ký tài khoản. |
-| **Ban tổ chức (`organizer`)** | `Organizers` | Tạo sự kiện mới; sửa thông tin, xem roster và xuất CSV **chỉ cho sự kiện do mình làm chủ**. | Không sửa, xem roster hoặc xuất CSV sự kiện của Ban tổ chức khác. |
-| **Quản trị viên (`administrator`)** | `Administrators` | Toàn quyền xem danh sách, chỉnh sửa, xuất CSV và quản lý tất cả sự kiện trên hệ thống. | — |
+| **Sinh viên (`student`)** | `Students` | Xem danh mục sự kiện, đăng ký giữ chỗ, xem biên nhận & lịch sử của mình, tự hủy vé của mình, **tự đổi mật khẩu**. | Không tạo/sửa/xóa sự kiện; không xem roster hoặc xuất CSV; không quản lý danh sách sinh viên; không hủy vé của người khác. |
+| **Ban tổ chức (`organizer`)** | `Organizers` | Tạo sự kiện mới; sửa thông tin, xem roster và xuất CSV **chỉ cho sự kiện do mình làm chủ**; đổi mật khẩu cá nhân. | Không xóa sự kiện; không sửa/xem roster/xuất CSV sự kiện của Ban tổ chức khác; không quản lý tài khoản sinh viên. |
+| **Quản trị viên (`administrator`)** | `Administrators` | Toàn quyền **Thêm / Sửa / Xóa sinh viên**, **Thêm / Sửa / Xóa mọi sự kiện**, **Thêm / Gỡ sinh viên trong sự kiện**, xem danh sách và xuất CSV toàn hệ thống. | — |
 
 ---
 
@@ -90,7 +92,8 @@ portal/
 │   ├── db.py                     # Bộ xử lý giao dịch SQLite (WAL, chống race condition)
 │   ├── postgres.py               # Bộ xử lý giao dịch PostgreSQL / Amazon RDS (SELECT FOR UPDATE)
 │   ├── auth.py                   # Xác thực AWS Cognito JWT (RS256/JWKS) & ánh xạ vai trò
-│   ├── accounts.py               # Quản lý tài khoản, băm mật khẩu scrypt, phiên & rate limit
+│   ├── accounts.py               # Quản lý tài khoản, băm mật khẩu scrypt, đổi mật khẩu, phiên & rate limit
+│   ├── admin.py                  # Nghiệp vụ quản trị viên (Thêm/Sửa/Xóa sinh viên, xóa sự kiện, thêm/gỡ roster)
 │   ├── account_validation.py     # Kiểm tra hợp lệ Email và CSRF Token
 │   ├── event_updates.py          # Nghiệp vụ chỉnh sửa sự kiện có kiểm tra chủ sở hữu & idempotency
 │   ├── storage.py                # Lưu trữ file xuất CSV (ổ đĩa cục bộ hoặc Amazon S3)
@@ -244,7 +247,7 @@ py -3 scripts/benchmark_e.py
 ```
 
 ### Kết quả kiểm thử đã xác minh
-- **Backend, Bảo mật, Proxy, Tài khoản & AWS IaC:** **43/43 tests PASS** (`OK`).
+- **Backend, Bảo mật, Quản trị, Proxy, Tài khoản & AWS IaC:** **46/46 tests PASS** (`OK`).
 - **Frontend & Client Adapter:** **20/20 tests PASS** (`0 fail`) + kiểm tra cú pháp sạch lỗi.
 - **Benchmark Phần E (`BENCHMARK-E-RESULTS.json`):**
   - **E1 (100 yêu cầu HTTP đồng thời tranh 20 chỗ):** Đúng `20` HTTP `201`, `80` HTTP `409 EVENT_FULL`, `0` lỗi `5xx` (`p50 = 111.376 ms`, `p95 = 609.107 ms`, `p99 = 773.499 ms`).

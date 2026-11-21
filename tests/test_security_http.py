@@ -58,13 +58,15 @@ class HttpSecurity(unittest.TestCase):
   self.assertEqual(self.call('/api/organizer/events/cloud-lab/roster',self.token('admin-1',['Administrators']))[0],200)
  def test_event_edits_validate_owner_capacity_and_durable_replay(self):
   org=self.token('org-1',['Organizers']);path='/api/organizer/events/ai-campus'
+  self.assertEqual(self.call('/api/events/ai-campus/registrations',self.token('stu-10003'),{'requestId':'cap-r1'},'cap-r1')[0],201)
+  self.assertEqual(self.call('/api/events/ai-campus/registrations',self.token('stu-10004'),{'requestId':'cap-r2'},'cap-r2')[0],201)
   event=self.call('/api/events/ai-campus')[1]
   payload={k:event[k] for k in ('title','startsAt','capacity','category','format','venue','description')}
   payload.update(capacity=130,requestId='edit-ok')
   status,body,_=self.call(path,org,payload,'edit-ok');self.assertEqual(status,200);self.assertEqual(body['event']['capacity'],130)
   self.assertEqual(self.call(path,org,payload,'edit-ok')[1],body)
   self.assertEqual(self.call(path,org,{**payload,'capacity':131},'edit-ok')[0],409)
-  self.assertEqual(self.call(path,org,{**payload,'capacity':85,'requestId':'edit-low'},'edit-low')[0],409)
+  self.assertEqual(self.call(path,org,{**payload,'capacity':1,'requestId':'edit-low'},'edit-low')[0],409)
   self.assertEqual(self.call(path,self.token('org-2',['Organizers']),{**payload,'requestId':'edit-other'},'edit-other')[0],403)
   self.assertEqual(self.call(path,self.token(),{**payload,'requestId':'edit-student'},'edit-student')[0],403)
   c=db.connect(self.path)

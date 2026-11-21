@@ -105,6 +105,12 @@
       this.logout(); localUser = result.user; csrfToken = result.csrfToken;
       return clone(localUser);
     },
+    async changePassword(currentPassword, newPassword) {
+      if (!config.localAccounts || config.mode !== 'http') throw new ApiError('Chức năng đổi mật khẩu không khả dụng ở chế độ này.', 403, 'LOCAL_ACCOUNTS_DISABLED');
+      const result = await http('/auth/change-password', { method: 'POST', body: { currentPassword, newPassword } });
+      localUser = result.user; csrfToken = result.csrfToken;
+      return result;
+    },
     login(id) {
       if (window.CampusAuth?.enabled) throw new ApiError('Hãy đăng nhập bằng tài khoản trường.', 403, 'COGNITO_LOGIN_REQUIRED');
       const user = fixtures.users.find(item => item.id === id);
@@ -206,6 +212,15 @@
       return [...seeded, ...clone(readState().bookings.filter(b => b.eventId === eventId && b.status === 'active'))];
     },
     async organizerEvents() { const events = await this.listEvents(); const user = requireUser(); if (!['organizer', 'administrator'].includes(user.role)) throw new ApiError('Bạn không có quyền truy cập trang này.', 403, 'FORBIDDEN'); return events.filter(e => user.role === 'administrator' || e.organizerId === user.id); },
+    admin: {
+      listStudents: () => http('/admin/students'),
+      createStudent: data => http('/admin/students', { method: 'POST', body: data }),
+      updateStudent: (id, data) => http(`/admin/students/${encodeURIComponent(id)}`, { method: 'POST', body: data }),
+      deleteStudent: id => http(`/admin/students/${encodeURIComponent(id)}/delete`, { method: 'POST', body: {} }),
+      deleteEvent: id => http(`/admin/events/${encodeURIComponent(id)}/delete`, { method: 'POST', body: {} }),
+      addStudentToEvent: (eventId, userId) => http(`/admin/events/${encodeURIComponent(eventId)}/registrations`, { method: 'POST', body: { userId } }),
+      removeRegistration: bookingId => http(`/admin/registrations/${encodeURIComponent(bookingId)}/remove`, { method: 'POST', body: {} })
+    },
     demo: {
       getScenario: () => scenario,
       setScenario(value) { scenario = value; didDropResponse = false; },

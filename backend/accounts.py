@@ -187,6 +187,35 @@ class AccountStore:
         finally:
             conn.close()
 
+    def change_password(self, user_id, payload):
+        if not isinstance(payload, dict) or set(payload) != {'currentPassword', 'newPassword'}:
+            raise AccountError(400, 'INVALID_PASSWORD', 'Vui lòng nhập mật khẩu hiện tại và mật khẩu mới.')
+        current_pw, new_pw = payload['currentPassword'], payload['newPassword']
+        if not isinstance(current_pw, str) or not isinstance(new_pw, str) or len(current_pw) > 128:
+            raise AccountError(400, 'INVALID_PASSWORD', 'Mật khẩu không hợp lệ.')
+        if not 12 <= len(new_pw) <= 128 or not new_pw.strip():
+            raise AccountError(400, 'INVALID_PASSWORD', 'Mật khẩu mới cần có từ 12 đến 128 ký tự.')
+        conn = self.database.connect(self.target)
+        try:
+            row = conn.execute(f'SELECT password_hash FROM account_credentials WHERE user_id={self.p}', (user_id,)).fetchone()
+        finally:
+            conn.close()
+        encoded = row['password_hash'] if row else _DUMMY_PASSWORD_HASH
+        if not row or not password_matches(current_pw, encoded):
+            raise AccountError(401, 'INVALID_CREDENTIALS', 'Mật khẩu hiện tại chưa đúng.')
+        new_encoded = password_hash(new_pw)
+        conn = self.database.connect(self.target)
+        try:
+            self.begin(conn)
+            conn.execute(f'UPDATE account_credentials SET password_hash={self.p} WHERE user_id={self.p}', (new_encoded, user_id))
+            conn.execute(f'DELETE FROM account_sessions WHERE user_id={self.p}', (user_id,))
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+
     def revoke(self, token):
         if not token:
             return

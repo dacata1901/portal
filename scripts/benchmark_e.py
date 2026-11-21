@@ -134,6 +134,8 @@ def run_benchmark(output_path):
             assert len(e1_409) == 80, f"Expected 80 HTTP 409 EVENT_FULL, got {len(e1_409)}"
 
             # Workload E2: Drop-after-commit fault injection + 10x HTTP retry
+            _, _, ai_event_before_e2, _ = _http_json(f"{base_url}/api/events/ai-campus")
+            ai_before = ai_event_before_e2["remainingCapacity"]
             e2_key = "bench-e2-drop-ai-campus"
             drop_headers = {
                 "Content-Type": "application/json",
@@ -180,11 +182,11 @@ def run_benchmark(output_path):
             booking_ids = {r["bookingId"] for r in e2_retries}
             assert all(r["status"] == 201 and r["replayed"] == "true" for r in e2_retries), "Replay assertion failed"
             assert len(booking_ids) == 1 and None not in booking_ids, "Expected single booking ID across retries"
-            assert all(r["remainingCapacity"] == 33 for r in e2_retries), "Expected ai-campus remainingCapacity == 33"
+            assert all(r["remainingCapacity"] == ai_before - 1 for r in e2_retries), "Expected ai-campus remainingCapacity decrement by 1"
             target_booking_id = next(iter(booking_ids))
 
             _, _, ai_event_after_e2, _ = _http_json(f"{base_url}/api/events/ai-campus")
-            assert ai_event_after_e2["remainingCapacity"] == 33, "GET ai-campus remainingCapacity mismatch after E2"
+            assert ai_event_after_e2["remainingCapacity"] == ai_before - 1, "GET ai-campus remainingCapacity mismatch after E2"
 
             # Workload E3: 20 concurrent cancellations + idempotency conflict check
             def cancel_concurrent(idx):
@@ -212,7 +214,7 @@ def run_benchmark(output_path):
 
             assert all(r["status"] == 200 and r["bookingStatus"] == "cancelled" for r in e3_cancels)
             _, _, ai_event_after_e3, _ = _http_json(f"{base_url}/api/events/ai-campus")
-            assert ai_event_after_e3["remainingCapacity"] == 34, "Expected ai-campus remainingCapacity == 34 after cancel"
+            assert ai_event_after_e3["remainingCapacity"] == ai_before, "Expected ai-campus remainingCapacity restored after cancel"
 
             conflict_status, _, conflict_body, conflict_latency = _http_json(
                 f"{base_url}/api/events/career-kit/registrations",

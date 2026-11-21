@@ -136,20 +136,6 @@ def seed(dsn):
                     (item["id"], item["title"], item["startsAt"], item["capacity"],
                      json.dumps(item, ensure_ascii=False)),
                 )
-                for index in range(item["baseRegistered"]):
-                    user_id = f"seed-{item['id']}-{index}"
-                    c.execute(
-                        """INSERT INTO users VALUES (%s,%s,%s,%s,'student')
-                           ON CONFLICT DO NOTHING""",
-                        (user_id, user_id, f"Sinh viên giả {index}", f"{user_id}@example.test"),
-                    )
-                    c.execute(
-                        """INSERT INTO registrations
-                           (id,user_id,event_id,status,created_at,cancelled_at)
-                           VALUES (%s,%s,%s,'active',%s,NULL)
-                           ON CONFLICT DO NOTHING""",
-                        (user_id, user_id, item["id"], "2026-11-09T01:00:00Z"),
-                    )
             c.execute("COMMIT")
         except Exception:
             c.execute("ROLLBACK")

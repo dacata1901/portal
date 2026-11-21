@@ -38,10 +38,6 @@ def seed(path):
             c.execute('INSERT OR IGNORE INTO users VALUES(?,?,?,?,?)',(u['id'],u.get('studentId'),u['name'],u['email'],u['role']))
         for e in d['events']:
             c.execute('INSERT OR IGNORE INTO events VALUES(?,?,?,?,?)',(e['id'],e['title'],e['startsAt'],e['capacity'],json.dumps(e)))
-            for i in range(e['baseRegistered']):
-                uid=f"seed-{e['id']}-{i}"
-                c.execute('INSERT OR IGNORE INTO users VALUES(?,?,?,?,?)',(uid,uid,'Sinh viên giả '+str(i),uid+'@example.test','student'))
-                c.execute('INSERT INTO registrations SELECT ?,?,?,?,?,NULL WHERE NOT EXISTS (SELECT 1 FROM registrations WHERE id=?)',(uid,uid,e['id'],'active','2026-11-09T01:00:00Z',uid))
         c.commit()
     except: c.rollback(); raise
     finally: c.close()

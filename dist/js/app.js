@@ -3,8 +3,8 @@
   const api = window.PortalApi, config = window.CAMPUS_CONFIG, utils = window.CampusUtils;
   const $ = selector => document.querySelector(selector), esc = utils.escape;
   const main = $('#main'), dialog = $('#app-dialog');
-  const view = { category: 'Tất cả', search: '', available: false, sort: 'date', bookingTab: 'all', rosterSearch: '' };
-  let eventsCache = [], currentEvent = null, bookingCache = [], rosterCache = [], organizerCache = [], renderVersion = 0;
+  const view = { category: 'Tất cả', search: '', available: false, sort: 'date', bookingTab: 'all', rosterSearch: '', studentSearch: '' };
+  let eventsCache = [], currentEvent = null, bookingCache = [], rosterCache = [], organizerCache = [], studentsCache = [], renderVersion = 0;
   let loginCallback = null, submitBusy = false, activeAction = null, publishRequestId = null;
   const pending = new Map();
   try { for (const [k, v] of Object.entries(JSON.parse(sessionStorage.getItem('campus-pending-v1') || '{}'))) pending.set(k, v); } catch { /* Dự phòng trong bộ nhớ. */ }
@@ -57,8 +57,10 @@
   }
   function header() {
     const current = user(), path = routeInfo().pathname;
-    const links = [['/events', 'Khám phá'], ['/bookings', 'Đăng ký của tôi']];
-    if (current && current.role !== 'student') links.push(['/organizer', 'Ban tổ chức']);
+    const links = [['/events', 'Khám phá']];
+    if (!current || current.role !== 'administrator') links.push(['/bookings', 'Đăng ký của tôi']);
+    if (current && current.role !== 'student') links.push(['/organizer', current.role === 'administrator' ? 'Quản lý sự kiện' : 'Ban tổ chức']);
+    if (current && current.role === 'administrator') links.push(['/students', 'Quản lý sinh viên']);
     $('#main-nav').innerHTML = links.map(([href, label]) => `<a class="nav-link${path.startsWith(href) ? ' active' : ''}" href="#${href}"${path.startsWith(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('');
     $('#account-area').innerHTML = current ? `<button class="account-button" type="button" data-action="account" aria-label="Tài khoản ${esc(current.name)}"><span class="avatar">${esc(initials(current.name))}</span><span class="account-name">${esc(current.name.split(' ').slice(-2).join(' '))}</span>${icon('chevron')}</button>` : '<div class="auth-header-actions"><button class="button primary small" type="button" data-action="login">Đăng nhập</button></div>';
     $('.site-header').classList.toggle('has-auth-actions', !current);
@@ -144,16 +146,34 @@
     if (!events.length) { setMain(`<div class="container page-shell">${emptyState('Chưa có sự kiện được quản lý', 'Sự kiện của bạn sẽ xuất hiện ở đây khi được xuất bản.', '<button class="button primary" type="button" data-action="create-event">Tạo sự kiện</button>')}</div>`, version); return; }
     const requestedId = routeInfo().searchParams.get('event');
     const event = events.find(e => e.id === requestedId) || events[0]; currentEvent = event;
+    const isAdmin = user().role === 'administrator';
     const roster = await api.roster(event.id); if (version !== renderVersion) return; rosterCache = roster;
-    setMain(`<div class="container page-shell organizer-page"><div class="page-intro"><div><div class="eyebrow">Không gian ban tổ chức</div><h1 style="margin-top:14px">Quản lý sự kiện</h1><p>Theo dõi sức chứa và danh sách sinh viên của sự kiện bạn phụ trách.</p></div><span class="badge">${esc(roleName(user().role))}</span><button type="button" class="button primary small" data-action="create-event">Tạo sự kiện</button></div><section class="organizer-summary"><div class="summary-art">${art(event)}</div><div class="summary-copy"><div class="event-category">${esc(event.category)} · ${esc(event.format)}</div><h2>${esc(event.title)}</h2><p>${icon('calendar')}${dateLabel(event.startsAt)} · ${timeLabel(event.startsAt)}<span>·</span>${esc(event.venue)}</p><button type="button" class="button secondary small" data-action="edit-event">Chỉnh sửa sự kiện</button><div class="dashboard-selector"><label for="organizer-event">Sự kiện đang xem</label><select id="organizer-event" class="select-input">${events.map(e => `<option value="${esc(e.id)}"${e.id === event.id ? ' selected' : ''}>${esc(e.title)}</option>`).join('')}</select></div></div></section><div class="stats-grid"><div class="stat-card"><span>Đã đăng ký</span><strong>${roster.length}</strong><small>Sinh viên có đăng ký hoạt động</small></div><div class="stat-card"><span>Chỗ còn lại</span><strong>${event.remainingCapacity}</strong><small>Trên tổng ${event.capacity} chỗ</small></div><div class="stat-card"><span>Tỷ lệ đăng ký</span><strong>${Math.round(roster.length / event.capacity * 100)}%</strong><small>Đăng ký đang hoạt động / sức chứa</small><div class="capacity-track" role="progressbar" aria-label="Tỷ lệ đăng ký" aria-valuenow="${roster.length}" aria-valuemin="0" aria-valuemax="${event.capacity}"><span style="width:${Math.min(100, roster.length / event.capacity * 100)}%"></span></div></div></div><section class="dashboard-panel"><div class="dashboard-toolbar"><div><h2>Danh sách tham gia</h2><p>${esc(event.title)}</p></div><button type="button" class="button primary small" data-action="export-csv">${icon('download')} Tải danh sách CSV</button></div><div class="roster-tools"><label class="search-input-wrap">${icon('search')}<span class="visually-hidden">Tìm sinh viên</span><input id="roster-search" class="search-input" type="search" placeholder="Tìm họ tên hoặc mã sinh viên…" value="${esc(view.rosterSearch)}"></label><span id="roster-count" class="roster-count" aria-live="polite"></span></div><div class="table-wrap"><table><caption class="visually-hidden">Sinh viên đã đăng ký sự kiện</caption><thead><tr><th scope="col">Sinh viên</th><th scope="col">Mã sinh viên</th><th scope="col">Mã đăng ký</th><th scope="col">Trạng thái</th></tr></thead><tbody id="roster-rows"></tbody></table></div><div class="table-footnote">CSV bao gồm toàn bộ đăng ký đang hoạt động của sự kiện được chọn.</div></section></div>`, version);
+    setMain(`<div class="container page-shell organizer-page"><div class="page-intro"><div><div class="eyebrow">${isAdmin ? 'Không gian quản trị viên' : 'Không gian ban tổ chức'}</div><h1 style="margin-top:14px">Quản lý sự kiện</h1><p>Theo dõi sức chứa, quản lý sự kiện và danh sách sinh viên tham gia thực tế.</p></div><span class="badge">${esc(roleName(user().role))}</span><div class="toolbar-actions">${isAdmin ? '<a class="button secondary small" href="#/students">Quản lý sinh viên</a>' : ''}<button type="button" class="button primary small" data-action="create-event">Tạo sự kiện</button></div></div><section class="organizer-summary"><div class="summary-art">${art(event)}</div><div class="summary-copy"><div class="event-category">${esc(event.category)} · ${esc(event.format)}</div><h2>${esc(event.title)}</h2><p>${icon('calendar')}${dateLabel(event.startsAt)} · ${timeLabel(event.startsAt)}<span>·</span>${esc(event.venue)}</p><div class="toolbar-actions" style="margin-top:12px"><button type="button" class="button secondary small" data-action="edit-event">Chỉnh sửa sự kiện</button>${isAdmin ? '<button type="button" class="button danger small" data-action="delete-event">Xóa sự kiện</button>' : ''}</div><div class="dashboard-selector"><label for="organizer-event">Sự kiện đang xem</label><select id="organizer-event" class="select-input">${events.map(e => `<option value="${esc(e.id)}"${e.id === event.id ? ' selected' : ''}>${esc(e.title)}</option>`).join('')}</select></div></div></section><div class="stats-grid"><div class="stat-card"><span>Đã đăng ký</span><strong>${roster.length}</strong><small>Sinh viên có đăng ký hoạt động</small></div><div class="stat-card"><span>Chỗ còn lại</span><strong>${event.remainingCapacity}</strong><small>Trên tổng ${event.capacity} chỗ</small></div><div class="stat-card"><span>Tỷ lệ đăng ký</span><strong>${Math.round(roster.length / event.capacity * 100)}%</strong><small>Đăng ký đang hoạt động / sức chứa</small><div class="capacity-track" role="progressbar" aria-label="Tỷ lệ đăng ký" aria-valuenow="${roster.length}" aria-valuemin="0" aria-valuemax="${event.capacity}"><span style="width:${Math.min(100, roster.length / event.capacity * 100)}%"></span></div></div></div><section class="dashboard-panel"><div class="dashboard-toolbar"><div><h2>Danh sách tham gia</h2><p>${esc(event.title)}</p></div><div class="toolbar-actions">${isAdmin ? '<button type="button" class="button secondary small" data-action="add-to-event">+ Thêm sinh viên</button>' : ''}<button type="button" class="button primary small" data-action="export-csv">${icon('download')} Tải danh sách CSV</button></div></div><div class="roster-tools"><label class="search-input-wrap">${icon('search')}<span class="visually-hidden">Tìm sinh viên</span><input id="roster-search" class="search-input" type="search" placeholder="Tìm họ tên hoặc mã sinh viên…" value="${esc(view.rosterSearch)}"></label><span id="roster-count" class="roster-count" aria-live="polite"></span></div><div class="table-wrap"><table><caption class="visually-hidden">Sinh viên đã đăng ký sự kiện</caption><thead><tr><th scope="col">Sinh viên</th><th scope="col">Mã sinh viên</th><th scope="col">Mã đăng ký</th><th scope="col">Trạng thái</th>${isAdmin ? '<th scope="col">Thao tác</th>' : ''}</tr></thead><tbody id="roster-rows"></tbody></table></div><div class="table-footnote">CSV bao gồm toàn bộ đăng ký đang hoạt động của sự kiện được chọn.</div></section></div>`, version);
     renderRosterRows();
   }
   function renderRosterRows() {
     const query = view.rosterSearch.trim().toLocaleLowerCase('vi');
+    const isAdmin = user()?.role === 'administrator';
     const rows = rosterCache.filter(row => `${row.name} ${row.studentId} ${row.email}`.toLocaleLowerCase('vi').includes(query));
     if (!$('#roster-rows')) return;
     $('#roster-count').textContent = `${rows.length}/${rosterCache.length} sinh viên`;
-    $('#roster-rows').innerHTML = rows.length ? rows.map(row => `<tr><td><div class="student-cell"><span class="avatar">${esc(initials(row.name))}</span><div><strong>${esc(row.name)}</strong><small>${esc(row.email)}</small></div></div></td><td data-label="Mã sinh viên">${esc(row.studentId)}</td><td data-label="Mã đăng ký"><span class="booking-code">${esc(row.id)}</span></td><td data-label="Trạng thái"><span class="badge">Đã xác nhận</span></td></tr>`).join('') : '<tr><td colspan="4" class="empty-table">Chưa có sinh viên phù hợp trong danh sách.</td></tr>';
+    $('#roster-rows').innerHTML = rows.length ? rows.map(row => `<tr><td><div class="student-cell"><span class="avatar">${esc(initials(row.name))}</span><div><strong>${esc(row.name)}</strong><small>${esc(row.email)}</small></div></div></td><td data-label="Mã sinh viên">${esc(row.studentId)}</td><td data-label="Mã đăng ký"><span class="booking-code">${esc(row.id)}</span></td><td data-label="Trạng thái"><span class="badge">Đã xác nhận</span></td>${isAdmin ? `<td data-label="Thao tác"><button type="button" class="button danger small" data-action="remove-from-event" data-booking="${esc(row.id)}">Gỡ khỏi sự kiện</button></td>` : ''}</tr>`).join('') : `<tr><td colspan="${isAdmin ? 5 : 4}" class="empty-table">Chưa có sinh viên nào đăng ký sự kiện này.</td></tr>`;
+  }
+  async function renderStudents(version) {
+    if (!user()) { setMain(`<div class="container page-shell">${emptyState('Quản lý sinh viên', 'Đăng nhập bằng tài khoản quản trị viên để quản lý danh sách sinh viên.', '<button class="button primary" type="button" data-action="login">Đăng nhập</button>', 'users')}</div>`, version); return; }
+    if (user().role !== 'administrator') throw new api.ApiError('Chỉ quản trị viên mới có quyền quản lý danh sách sinh viên.', 403, 'FORBIDDEN');
+    setMain('<div class="container page-shell"><div class="state-box"><span class="spinner" role="status" aria-label="Đang tải danh sách sinh viên"></span></div></div>', version);
+    const students = await api.admin.listStudents(); if (version !== renderVersion) return; studentsCache = students;
+    const totalActive = students.reduce((sum, s) => sum + (Number(s.activeBookings) || 0), 0);
+    setMain(`<div class="container page-shell organizer-page"><div class="page-intro"><div><div class="eyebrow">Không gian quản trị viên</div><h1 style="margin-top:14px">Quản lý sinh viên</h1><p>Thêm mới, chỉnh sửa thông tin, cấp lại mật khẩu hoặc xóa tài khoản sinh viên của nhà trường.</p></div><div class="toolbar-actions"><a class="button secondary small" href="#/organizer">Quản lý sự kiện</a><button type="button" class="button primary small" data-action="create-student">+ Thêm sinh viên</button></div></div><div class="stats-grid"><div class="stat-card"><span>Tổng số sinh viên</span><strong>${students.length}</strong><small>Tài khoản sinh viên đang hoạt động</small></div><div class="stat-card"><span>Tổng lượt tham gia</span><strong>${totalActive}</strong><small>Đăng ký sự kiện đang hoạt động</small></div><div class="stat-card"><span>Phạm vi quản trị</span><strong>RBAC</strong><small>Chỉ quản trị viên được phép thay đổi</small></div></div><section class="dashboard-panel"><div class="dashboard-toolbar"><div><h2>Danh sách sinh viên</h2><p>Chỉ sinh viên được quản trị viên tạo hoặc cấp sẵn mới có thể đăng nhập và tham gia sự kiện.</p></div><button type="button" class="button primary small" data-action="create-student">+ Thêm sinh viên</button></div><div class="roster-tools"><label class="search-input-wrap">${icon('search')}<span class="visually-hidden">Tìm sinh viên</span><input id="student-search" class="search-input" type="search" placeholder="Tìm họ tên, mã sinh viên hoặc email…" value="${esc(view.studentSearch)}"></label><span id="student-count" class="roster-count" aria-live="polite"></span></div><div class="table-wrap"><table><caption class="visually-hidden">Danh sách tài khoản sinh viên</caption><thead><tr><th scope="col">Sinh viên</th><th scope="col">Mã sinh viên</th><th scope="col">Sự kiện tham gia</th><th scope="col">Thao tác</th></tr></thead><tbody id="student-rows"></tbody></table></div></section></div>`, version);
+    renderStudentRows();
+  }
+  function renderStudentRows() {
+    const query = view.studentSearch.trim().toLocaleLowerCase('vi');
+    const rows = studentsCache.filter(row => `${row.name} ${row.studentId} ${row.email}`.toLocaleLowerCase('vi').includes(query));
+    if (!$('#student-rows')) return;
+    $('#student-count').textContent = `${rows.length}/${studentsCache.length} sinh viên`;
+    $('#student-rows').innerHTML = rows.length ? rows.map(row => `<tr><td><div class="student-cell"><span class="avatar">${esc(initials(row.name))}</span><div><strong>${esc(row.name)}</strong><small>${esc(row.email)}</small></div></div></td><td data-label="Mã sinh viên">${esc(row.studentId)}</td><td data-label="Sự kiện tham gia"><span class="badge">${row.activeBookings || 0} sự kiện</span></td><td data-label="Thao tác"><div class="row-actions"><button type="button" class="button secondary small" data-action="edit-student" data-student="${esc(row.id)}">Sửa</button><button type="button" class="button danger small" data-action="delete-student" data-student="${esc(row.id)}">Xóa</button></div></td></tr>`).join('') : '<tr><td colspan="4" class="empty-table">Không tìm thấy sinh viên phù hợp.</td></tr>';
   }
   function updateCategoryRail() {
     const strip = $('#category-tabs'); if (!strip) return;
@@ -293,7 +313,112 @@
   }
   function openAccount() {
     const current = user(); if (!current) return openLogin();
-    showDialog('Tài khoản của bạn', `<p><strong>${esc(current.name)}</strong><br>${esc(roleName(current.role))}<br>${esc(current.email)}</p><div class="demo-options">${config.mode === 'mock' ? '<button class="button secondary" type="button" data-action="login">Đổi tài khoản mẫu</button>' : ''}<button class="button secondary" type="button" data-action="logout">${icon('logout')} Đăng xuất</button></div>`);
+    showDialog('Tài khoản của bạn', `<p><strong>${esc(current.name)}</strong><br>${esc(roleName(current.role))}${current.studentId ? ` · MSSV: ${esc(current.studentId)}` : ''}<br>${esc(current.email)}</p><div class="demo-options">${config.localAccounts && config.mode === 'http' ? '<button class="button secondary" type="button" data-action="change-password">Đổi mật khẩu</button>' : ''}${config.mode === 'mock' ? '<button class="button secondary" type="button" data-action="login">Đổi tài khoản mẫu</button>' : ''}<button class="button secondary" type="button" data-action="logout">${icon('logout')} Đăng xuất</button></div>`);
+  }
+  function openChangePassword() {
+    if (!user()) return openLogin();
+    showDialog('Đổi mật khẩu', `<p>Nhập mật khẩu hiện tại và đặt mật khẩu mới (tối thiểu 12 ký tự).</p><form id="change-password-form" class="account-form"><label class="field" for="cp-current">Mật khẩu hiện tại<input id="cp-current" name="currentPassword" type="password" autocomplete="current-password" maxlength="128" required></label><label class="field" for="cp-new">Mật khẩu mới<input id="cp-new" name="newPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" required><small>Từ 12 đến 128 ký tự.</small></label><label class="field" for="cp-confirm">Nhập lại mật khẩu mới<input id="cp-confirm" name="confirm" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label><div id="account-form-error" role="alert" aria-live="polite"></div><div class="dialog-actions"><button type="button" class="button secondary" data-action="close-dialog">Hủy</button><button class="button primary" type="submit">Lưu mật khẩu mới</button></div></form>`);
+  }
+  async function submitChangePassword(form) {
+    if (submitBusy || !form.reportValidity()) return;
+    const error = $('#account-form-error'); error.innerHTML = '';
+    if ($('#cp-new').value !== $('#cp-confirm').value) {
+      error.innerHTML = '<p class="dialog-error">Mật khẩu mới nhập lại chưa khớp.</p>';
+      $('#cp-confirm').focus(); return;
+    }
+    const button = form.querySelector('button[type="submit"]'), previous = button.textContent;
+    submitBusy = true; dialog.dataset.busy = 'true';
+    dialog.querySelectorAll('input,button').forEach(control => { control.disabled = true; });
+    button.innerHTML = '<span class="spinner" aria-hidden="true"></span> Đang lưu…';
+    try {
+      await api.session.changePassword($('#cp-current').value, $('#cp-new').value);
+      form.querySelectorAll('input[type="password"]').forEach(input => { input.value = ''; });
+      dialog.close(); toast('Đã đổi mật khẩu thành công.');
+    } catch (err) {
+      if (dialog.open && error.isConnected) error.innerHTML = `<p class="dialog-error">${esc(err.message)}</p>`;
+    } finally {
+      submitBusy = false; dialog.dataset.busy = 'false';
+      dialog.querySelectorAll('input,button').forEach(control => { control.disabled = false; });
+      if (button.isConnected) button.textContent = previous;
+    }
+  }
+  function openStudentForm(studentId = null) {
+    const existing = studentId ? studentsCache.find(s => s.id === studentId) : null;
+    showDialog(existing ? 'Chỉnh sửa sinh viên' : 'Thêm sinh viên mới', `<p>${existing ? 'Cập nhật thông tin sinh viên. Có thể để trống ô mật khẩu nếu không muốn đổi.' : 'Tạo tài khoản sinh viên mới do nhà trường cấp.'}</p><form id="admin-student-form" class="account-form"${existing ? ` data-student-id="${esc(existing.id)}"` : ''}><label class="field" for="stu-name">Họ và tên<input id="stu-name" name="name" minlength="2" maxlength="100" value="${esc(existing?.name || '')}" required></label><label class="field" for="stu-code">Mã sinh viên<input id="stu-code" name="studentId" minlength="3" maxlength="32" pattern="[A-Za-z0-9][A-Za-z0-9._-]{2,31}" value="${esc(existing?.studentId || '')}" required></label><label class="field" for="stu-email">Email<input id="stu-email" name="email" type="email" maxlength="254" value="${esc(existing?.email || '')}" required></label><label class="field" for="stu-password">${existing ? 'Mật khẩu mới (tùy chọn)' : 'Mật khẩu khởi tạo'}<input id="stu-password" name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password"${existing ? '' : ' required'}><small>${existing ? 'Để trống nếu giữ nguyên mật khẩu hiện tại (tối thiểu 12 ký tự nếu đặt lại).' : 'Từ 12 đến 128 ký tự.'}</small></label><div id="account-form-error" role="alert" aria-live="polite"></div><div class="dialog-actions"><button type="button" class="button secondary" data-action="close-dialog">Hủy</button><button class="button primary" type="submit">${existing ? 'Lưu thay đổi' : 'Thêm sinh viên'}</button></div></form>`);
+  }
+  async function submitStudentForm(form) {
+    if (submitBusy || !form.reportValidity()) return;
+    const error = $('#account-form-error'); error.innerHTML = '';
+    const studentId = form.dataset.studentId || null;
+    const payload = { name: $('#stu-name').value.trim(), studentId: $('#stu-code').value.trim(), email: $('#stu-email').value.trim() };
+    const pw = $('#stu-password').value;
+    if (pw || !studentId) payload.password = pw;
+    const button = form.querySelector('button[type="submit"]'), previous = button.textContent;
+    submitBusy = true; dialog.dataset.busy = 'true';
+    dialog.querySelectorAll('input,button').forEach(control => { control.disabled = true; });
+    button.innerHTML = '<span class="spinner" aria-hidden="true"></span> Đang lưu…';
+    try {
+      if (studentId) await api.admin.updateStudent(studentId, payload);
+      else await api.admin.createStudent(payload);
+      dialog.close();
+      toast(studentId ? 'Đã cập nhật thông tin sinh viên.' : 'Đã thêm sinh viên mới.');
+      await renderRoute();
+    } catch (err) {
+      if (dialog.open && error.isConnected) error.innerHTML = `<p class="dialog-error">${esc(err.message)}</p>`;
+    } finally {
+      submitBusy = false; dialog.dataset.busy = 'false';
+      dialog.querySelectorAll('input,button').forEach(control => { control.disabled = false; });
+      if (button.isConnected) button.textContent = previous;
+    }
+  }
+  function openDeleteStudent(studentId) {
+    const stu = studentsCache.find(s => s.id === studentId); if (!stu) return;
+    showDialog('Xóa sinh viên?', `<p>Bạn có chắc muốn xóa tài khoản <strong>${esc(stu.name)}</strong> (${esc(stu.studentId)})? Toàn bộ lượt đăng ký sự kiện của sinh viên này cũng sẽ bị xóa và tự động hoàn lại chỗ trống.</p><div id="account-form-error" role="alert"></div><div class="dialog-actions"><button type="button" class="button secondary" data-action="close-dialog">Giữ lại</button><button type="button" class="button danger" data-action="confirm-delete-student" data-student="${esc(stu.id)}">Xác nhận xóa</button></div>`);
+  }
+  function openDeleteEvent() {
+    if (!currentEvent) return;
+    showDialog('Xóa sự kiện?', `<p>Bạn có chắc muốn xóa vĩnh viễn sự kiện <strong>${esc(currentEvent.title)}</strong> cùng toàn bộ danh sách đăng ký của sự kiện này?</p><div id="account-form-error" role="alert"></div><div class="dialog-actions"><button type="button" class="button secondary" data-action="close-dialog">Giữ sự kiện</button><button type="button" class="button danger" data-action="confirm-delete-event" data-event="${esc(currentEvent.id)}">Xác nhận xóa</button></div>`);
+  }
+  async function openAddToEvent() {
+    if (!currentEvent) return;
+    showDialog('Thêm sinh viên vào sự kiện', '<div class="state-box" style="min-height:140px"><span class="spinner" role="status" aria-label="Đang tải danh sách sinh viên"></span></div>');
+    try {
+      const allStudents = await api.admin.listStudents();
+      const activeIds = new Set(rosterCache.map(r => r.userId));
+      const available = allStudents.filter(s => !activeIds.has(s.id));
+      if (!available.length) {
+        showDialog('Thêm sinh viên vào sự kiện', '<p>Tất cả sinh viên trong hệ thống đều đã đăng ký sự kiện này hoặc chưa có sinh viên nào.</p><div class="dialog-actions"><a class="button primary" href="#/students" data-action="close-dialog">Quản lý sinh viên</a></div>');
+        return;
+      }
+      showDialog('Thêm sinh viên vào sự kiện', `<p>Chọn một sinh viên đã tạo trong hệ thống để ghi danh vào <strong>${esc(currentEvent.title)}</strong> (còn ${currentEvent.remainingCapacity} chỗ).</p><form id="admin-add-to-event-form" class="account-form"><label class="field" for="add-student-filter">Lọc nhanh sinh viên<input id="add-student-filter" type="search" placeholder="Nhập tên hoặc MSSV…"></label><label class="field" for="add-student-select">Chọn sinh viên<select id="add-student-select" class="select-input" required>${available.map(s => `<option value="${esc(s.id)}">${esc(s.studentId)} · ${esc(s.name)} (${esc(s.email)})</option>`).join('')}</select></label><div id="account-form-error" role="alert"></div><div class="dialog-actions"><button type="button" class="button secondary" data-action="close-dialog">Hủy</button><button type="submit" class="button primary">Thêm vào sự kiện</button></div></form>`);
+      dialog._availableStudents = available;
+    } catch (err) {
+      showDialog('Không tải được danh sách sinh viên', `<p class="dialog-error">${esc(err.message)}</p>`);
+    }
+  }
+  async function submitAddToEvent(form) {
+    if (submitBusy || !currentEvent) return;
+    const select = $('#add-student-select'), error = $('#account-form-error'); error.innerHTML = '';
+    if (!select || !select.value) { error.innerHTML = '<p class="dialog-error">Vui lòng chọn sinh viên.</p>'; return; }
+    const button = form.querySelector('button[type="submit"]'), previous = button.textContent;
+    submitBusy = true; dialog.dataset.busy = 'true';
+    dialog.querySelectorAll('input,select,button').forEach(control => { control.disabled = true; });
+    button.innerHTML = '<span class="spinner" aria-hidden="true"></span> Đang thêm…';
+    try {
+      await api.admin.addStudentToEvent(currentEvent.id, select.value);
+      dialog.close(); toast('Đã thêm sinh viên vào sự kiện.');
+      await renderRoute();
+    } catch (err) {
+      if (dialog.open && error.isConnected) error.innerHTML = `<p class="dialog-error">${esc(err.message)}</p>`;
+    } finally {
+      submitBusy = false; dialog.dataset.busy = 'false';
+      dialog.querySelectorAll('input,select,button').forEach(control => { control.disabled = false; });
+      if (button.isConnected) button.textContent = previous;
+    }
+  }
+  function openRemoveFromEvent(bookingId) {
+    const row = rosterCache.find(r => r.id === bookingId); if (!row) return;
+    showDialog('Gỡ sinh viên khỏi sự kiện?', `<p>Hủy suất tham gia của <strong>${esc(row.name)}</strong> (${esc(row.studentId)}) khỏi sự kiện này và hoàn lại 1 chỗ trống?</p><div id="account-form-error" role="alert"></div><div class="dialog-actions"><button type="button" class="button secondary" data-action="close-dialog">Giữ lại</button><button type="button" class="button danger" data-action="confirm-remove-from-event" data-booking="${esc(row.id)}">Xác nhận gỡ</button></div>`);
   }
   function openPublishEvent() {
     publishRequestId = api.newRequestId();
@@ -399,13 +524,14 @@
     const version = ++renderVersion; if (dialog.open && !submitBusy) dialog.close();
     $('#main-nav').classList.remove('open'); $('#menu-toggle').setAttribute('aria-expanded', 'false'); header();
     const path = routeInfo().pathname;
-    document.title = path.startsWith('/organizer') ? 'Ban tổ chức — Campus' : path === '/bookings' ? 'Đăng ký của tôi — Campus' : 'Campus — Sự kiện đại học';
+    document.title = path.startsWith('/students') ? 'Quản lý sinh viên — Campus' : path.startsWith('/organizer') ? 'Quản lý sự kiện — Campus' : path === '/bookings' ? 'Đăng ký của tôi — Campus' : 'Campus — Sự kiện đại học';
     try {
       if (path === '/events' || path === '/') await renderCatalog(version);
       else if (/^\/events\/[^/]+$/.test(path)) await renderDetail(decodeURIComponent(path.split('/')[2]), version);
       else if (path === '/bookings') await renderBookings(version);
       else if (/^\/receipt\/[^/]+$/.test(path)) await renderReceipt(decodeURIComponent(path.split('/')[2]), version);
       else if (path === '/organizer') await renderOrganizer(version);
+      else if (path === '/students') await renderStudents(version);
       else throw new api.ApiError('Đường dẫn này chưa có trong bản mẫu.', 404, 'NOT_FOUND');
     } catch (err) {
       if (version !== renderVersion) return; header();
@@ -422,12 +548,22 @@
       else if (action === 'account-signup') openSignup(loginCallback);
       else if (action === 'account-login') openLogin(loginCallback);
       else if (action === 'account') openAccount();
+      else if (action === 'change-password') openChangePassword();
       else if (action === 'close-dialog') { if (!submitBusy) dialog.close(); }
       else if (action === 'choose-user') { await api.session.signOut(); api.session.login(target.dataset.user); dialog.close(); const callback = loginCallback; loginCallback = null; header(); if (callback) await callback(); else renderRoute(); }
       else if (action === 'logout') { await api.session.signOut(); dialog.close(); toast('Bạn đã đăng xuất.'); renderRoute(); }
       else if (action === 'real-login') await api.session.signIn();
       else if (action === 'create-event') openPublishEvent();
       else if (action === 'edit-event') openEditEvent();
+      else if (action === 'delete-event') openDeleteEvent();
+      else if (action === 'confirm-delete-event') { await api.admin.deleteEvent(target.dataset.event); dialog.close(); toast('Đã xóa sự kiện.'); go('/organizer'); }
+      else if (action === 'add-to-event') await openAddToEvent();
+      else if (action === 'remove-from-event') openRemoveFromEvent(target.dataset.booking);
+      else if (action === 'confirm-remove-from-event') { await api.admin.removeRegistration(target.dataset.booking); dialog.close(); toast('Đã gỡ sinh viên khỏi sự kiện và hoàn lại 1 chỗ.'); await renderRoute(); }
+      else if (action === 'create-student') openStudentForm();
+      else if (action === 'edit-student') openStudentForm(target.dataset.student);
+      else if (action === 'delete-student') openDeleteStudent(target.dataset.student);
+      else if (action === 'confirm-delete-student') { await api.admin.deleteStudent(target.dataset.student); dialog.close(); toast('Đã xóa tài khoản sinh viên.'); await renderRoute(); }
       else if (action === 'publish-event') await publishEvent();
       else if (action === 'category') { view.category = target.dataset.category; document.querySelectorAll('[data-action="category"]').forEach(button => { const active = button.dataset.category === view.category; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)); }); renderResults(); }
       else if (action === 'clear-filters') { Object.assign(view, { category: 'Tất cả', search: '', available: false }); renderRoute(); }
@@ -445,12 +581,20 @@
     } catch (err) { toast(err.message || 'Chưa hoàn tất thao tác. Vui lòng thử lại.', true); }
   });
   document.addEventListener('submit', event => {
-    if (!['account-signup-form','account-login-form'].includes(event.target.id)) return;
-    event.preventDefault(); submitAccountForm(event.target);
+    if (['account-signup-form','account-login-form'].includes(event.target.id)) { event.preventDefault(); submitAccountForm(event.target); }
+    else if (event.target.id === 'change-password-form') { event.preventDefault(); submitChangePassword(event.target); }
+    else if (event.target.id === 'admin-student-form') { event.preventDefault(); submitStudentForm(event.target); }
+    else if (event.target.id === 'admin-add-to-event-form') { event.preventDefault(); submitAddToEvent(event.target); }
   });
   document.addEventListener('input', event => {
     if (event.target.id === 'event-search') { view.search = event.target.value; renderResults(); }
     else if (event.target.id === 'roster-search') { view.rosterSearch = event.target.value; renderRosterRows(); }
+    else if (event.target.id === 'student-search') { view.studentSearch = event.target.value; renderStudentRows(); }
+    else if (event.target.id === 'add-student-filter' && dialog._availableStudents) {
+      const q = event.target.value.trim().toLocaleLowerCase('vi');
+      const matches = dialog._availableStudents.filter(s => `${s.studentId} ${s.name} ${s.email}`.toLocaleLowerCase('vi').includes(q));
+      $('#add-student-select').innerHTML = matches.length ? matches.map(s => `<option value="${esc(s.id)}">${esc(s.studentId)} · ${esc(s.name)} (${esc(s.email)})</option>`).join('') : '<option value="">Không tìm thấy sinh viên phù hợp</option>';
+    }
     else if (event.target.id === 'publish-description' && $('#publish-event-form').dataset.linkedDescription === 'true') $('#publish-about').value = event.target.value;
     else if (event.target.id === 'publish-about') $('#publish-event-form').dataset.linkedDescription = 'false';
   });

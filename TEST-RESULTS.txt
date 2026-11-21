@@ -1,4 +1,4 @@
-Backend, Accounts, Security, Public Proxy & IaC: 43/43 tests đạt, 0 lỗi (py -3 -m unittest discover -s tests -p "test_*.py" -v).
+Backend, Admin CRUD, Accounts, Security, Public Proxy & IaC: 46/46 tests đạt, 0 lỗi (py -3 -m unittest discover -s tests -p "test_*.py" -v).
 Frontend & Client Adapter: 20/20 tests đạt, 0 lỗi (npm.cmd test && npm.cmd run check).
 - 100 yêu cầu đồng thời tranh 20 chỗ: đúng 20 thành công, 80 hết chỗ.
 - Đăng ký/đăng nhập tài khoản sinh viên (scrypt password hash, HttpOnly + SameSite=Strict session cookie, CSRF token, rate limit): đạt.
