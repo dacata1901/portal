@@ -172,8 +172,9 @@ try {
         Write-Host "Waiting for the Cloudflare Quick Tunnel URL (first boot can take a few minutes)..."
         $tunnelUrl = ""
         for ($i = 0; $i -lt 60 -and -not $tunnelUrl; $i++) {
-            $value = & aws ssm get-parameter --name $outputMap['TunnelUrlParameter'] --region $Region --query "Parameter.Value" --output text 2>$null
-            if ($LASTEXITCODE -eq 0 -and $value -match '^https://') { $tunnelUrl = $value.Trim() } else { Start-Sleep -Seconds 10 }
+            $value = $null
+            try { $value = & aws ssm get-parameter --name $outputMap['TunnelUrlParameter'] --region $Region --query "Parameter.Value" --output text 2>$null } catch { $value = $null }
+            if ($value -and "$value" -match '^https://') { $tunnelUrl = "$value".Trim() } else { Start-Sleep -Seconds 10 }
         }
         if ($tunnelUrl) { Write-Host "Public HTTPS URL (Cloudflare): $tunnelUrl" }
         else { Write-Host "Tunnel URL not ready yet. Later run: aws ssm get-parameter --name $($outputMap['TunnelUrlParameter']) --region $Region --query Parameter.Value --output text" }
