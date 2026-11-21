@@ -9,6 +9,17 @@
 >
 > *(Lưu ý: Đường link `http://127.0.0.1:4173/` ở Mục 5 bên dưới chỉ dùng khi bạn tự chạy máy chủ trên máy tính cá nhân bằng lệnh `py -3 server.py`.)*
 
+### Tài khoản Demo do Nhà trường cấp sẵn trên bản trực tuyến
+
+| Vai trò | Mã tài khoản | Email đăng nhập | Mật khẩu |
+| :--- | :--- | :--- | :--- |
+| **100 Sinh viên** | `stu-10001` .. `stu-10100` | `student10001@example.test` đến `student10100@example.test` *(ví dụ: `student10001@example.test`, `student10002@example.test`, ..., `student10100@example.test`)* | `Stu-CpAeXJfXqnGfuk` |
+| **Ban tổ chức (CLB Công nghệ)** | `org-1` | `organizer@example.test` | `Org-4f5Etiyw6Mf3feCa` |
+| **Ban tổ chức (Ban hoạt động SV)** | `org-2` | `organizer2@example.test` | `Org-4f5Etiyw6Mf3feCa` |
+| **Quản trị viên** | `admin-1` | `admin@example.test` | `Adm-NnrWA5n8BjiHLT9u` |
+
+*(Toàn bộ là dữ liệu mẫu tổng hợp phục vụ demo đồ án môn học; chức năng tự đăng ký tài khoản công khai đã bị tắt theo đúng mô hình tài khoản do nhà trường cấp.)*
+
 ---
 
 ## 1. Tính năng nổi bật
