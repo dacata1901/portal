@@ -43,11 +43,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Đặt mật khẩu cho tài khoản đã có trên máy.')
     parser.add_argument('user_id', help='Ví dụ: org-1 hoặc admin-1')
     parser.add_argument('--db', default=str(ROOT/'portal.sqlite3'))
+    parser.add_argument('--password-env', help='Đọc mật khẩu từ biến môi trường (dùng cho bootstrap máy chủ, không in ra log).')
     args = parser.parse_args()
     try:
-        password = getpass.getpass('Mật khẩu mới: ')
-        if password != getpass.getpass('Nhập lại mật khẩu: '):
-            raise ValueError('Hai mật khẩu chưa khớp.')
+        if args.password_env:
+            password = os.environ.get(args.password_env, '')
+        else:
+            password = getpass.getpass('Mật khẩu mới: ')
+            if password != getpass.getpass('Nhập lại mật khẩu: '):
+                raise ValueError('Hai mật khẩu chưa khớp.')
         set_password(args.db, args.user_id, password)
         print('Đã đặt mật khẩu. Đăng nhập qua form email/mật khẩu. Quyền tài khoản được giữ nguyên.')
     except (ValueError, db.DatabaseError) as error:

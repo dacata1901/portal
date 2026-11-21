@@ -13,10 +13,20 @@ param(
     [string]$CognitoLogoutUri = "",
     [switch]$ProvisionCognito,
     [switch]$ProvisionRds,
-    [string]$DbMasterPassword = ""
+    [string]$DbMasterPassword = "",
+    [switch]$DisableCloudflareTunnel,
+    [string]$OrganizerPassword = "",
+    [string]$AdminPassword = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+foreach ($pw in @(@{ Name = "OrganizerPassword"; Value = $OrganizerPassword }, @{ Name = "AdminPassword"; Value = $AdminPassword })) {
+    if (-not [string]::IsNullOrEmpty($pw.Value)) {
+        if ($pw.Value.Length -lt 12 -or $pw.Value.Length -gt 128) { throw "$($pw.Name) must be 12-128 characters." }
+        if ($pw.Value -match "['`"\r\n]") { throw "$($pw.Name) must not contain quotes or line breaks." }
+    }
+}
 
 $defaultAws = Join-Path $env:ProgramFiles "Amazon\AWSCLIV2\aws.exe"
 if ((-not (Get-Command aws.exe -ErrorAction SilentlyContinue)) -and (Test-Path $defaultAws)) {
@@ -79,6 +89,9 @@ try {
     }
     Copy-Item (Join-Path $projectRoot "backend") $staging -Recurse
     Copy-Item (Join-Path $projectRoot "dist") $staging -Recurse
+    New-Item -ItemType Directory -Path (Join-Path $staging "scripts") -Force | Out-Null
+    Copy-Item (Join-Path $projectRoot "scripts\set_account_password.py") (Join-Path $staging "scripts")
+    Get-ChildItem -Path $staging -Recurse -Directory -Filter "__pycache__" | Remove-Item -Recurse -Force
     & py -3 -c "import pathlib, sys, zipfile; src = pathlib.Path(sys.argv[1]); dst = pathlib.Path(sys.argv[2]); zf = zipfile.ZipFile(dst, 'w', zipfile.ZIP_DEFLATED); [zf.write(p, p.relative_to(src).as_posix()) for p in src.rglob('*') if p.is_file()]; zf.close()" $staging $archive
     if ($LASTEXITCODE -ne 0) { throw "Could not create the application ZIP archive." }
 
@@ -129,6 +142,9 @@ try {
         $paramOverrides += "ProvisionRds=true"
         $paramOverrides += "DbMasterPassword=$DbMasterPassword"
     }
+    if ($DisableCloudflareTunnel) { $paramOverrides += "EnableCloudflareTunnel=false" }
+    if (-not [string]::IsNullOrEmpty($OrganizerPassword)) { $paramOverrides += "OrganizerPassword=$OrganizerPassword" }
+    if (-not [string]::IsNullOrEmpty($AdminPassword)) { $paramOverrides += "AdminPassword=$AdminPassword" }
 
     Write-Host "Private deployment bucket: $bucket"
     Write-Host "Deploying stack '$StackName' in $Region (auth: $AuthMode); HTTP access restricted to $AllowedCidr."
@@ -152,6 +168,16 @@ try {
     if ($outputMap.ContainsKey('CognitoClientId')) { Write-Host "Cognito Client ID: $($outputMap['CognitoClientId'])" }
     if ($outputMap.ContainsKey('CognitoDomain')) { Write-Host "Cognito Domain: $($outputMap['CognitoDomain'])" }
     if ($outputMap.ContainsKey('RdsEndpoint')) { Write-Host "RDS Endpoint: $($outputMap['RdsEndpoint'])" }
+    if ($outputMap.ContainsKey('TunnelUrlParameter')) {
+        Write-Host "Waiting for the Cloudflare Quick Tunnel URL (first boot can take a few minutes)..."
+        $tunnelUrl = ""
+        for ($i = 0; $i -lt 60 -and -not $tunnelUrl; $i++) {
+            $value = & aws ssm get-parameter --name $outputMap['TunnelUrlParameter'] --region $Region --query "Parameter.Value" --output text 2>$null
+            if ($LASTEXITCODE -eq 0 -and $value -match '^https://') { $tunnelUrl = $value.Trim() } else { Start-Sleep -Seconds 10 }
+        }
+        if ($tunnelUrl) { Write-Host "Public HTTPS URL (Cloudflare): $tunnelUrl" }
+        else { Write-Host "Tunnel URL not ready yet. Later run: aws ssm get-parameter --name $($outputMap['TunnelUrlParameter']) --region $Region --query Parameter.Value --output text" }
+    }
     Write-Host "Save this bucket name for cleanup: $bucket"
     Write-Host "The app may take several minutes to finish its first boot."
 }

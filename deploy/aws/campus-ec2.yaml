@@ -79,10 +79,28 @@ Parameters:
     Default: ''
     NoEcho: true
     Description: Master password for RDS PostgreSQL when ProvisionRds is true (min 8 chars).
+  EnableCloudflareTunnel:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Run a Cloudflare Quick Tunnel (https://*.trycloudflare.com) in front of the app.
+  OrganizerPassword:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Optional password (12-128 chars) for seeded account org-1 so organizers can sign in remotely.
+  AdminPassword:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Optional password (12-128 chars) for seeded account admin-1 so administrators can sign in remotely.
 
 Conditions:
   CreateCognitoResources: !Equals [!Ref ProvisionCognito, 'true']
   CreateRdsResources: !Equals [!Ref ProvisionRds, 'true']
+  UseCloudflareTunnel: !Equals [!Ref EnableCloudflareTunnel, 'true']
 
 Resources:
   PortalVpc:
@@ -174,6 +192,13 @@ Resources:
               - Effect: Allow
                 Action: s3:GetObject
                 Resource: !Sub arn:${AWS::Partition}:s3:::${ArtifactBucket}/${ArtifactKey}
+        - PolicyName: PublishTunnelUrl
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: ssm:PutParameter
+                Resource: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${AWS::StackName}/tunnel-url
       Tags:
         - Key: Name
           Value: campus-portal-instance-role
@@ -267,6 +292,7 @@ Resources:
               PORTAL_OBJECT_DIR=/var/lib/campus/exports
               PORTAL_LOG_FILE=/var/lib/campus/requests.jsonl
               PORTAL_ALLOW_REMOTE_DEMO=1
+              PORTAL_TRUST_LOCAL_PROXY=1
               PORTAL_AUTH_MODE=${AuthMode}
               PORTAL_DATABASE_URL=${ResolvedDatabaseUrl}
               COGNITO_REGION=${CognitoRegion}
@@ -299,7 +325,77 @@ Resources:
               WantedBy=multi-user.target
               SERVICE
               systemctl daemon-reload
+
+              # Seed the database, then give seeded staff accounts passwords (never traced to logs).
+              sudo -u ubuntu bash -c 'set -a; . /etc/campus-portal.env; set +a; cd /opt/campus; /opt/campus/.venv/bin/python server.py seed'
+              set +x
+              export CAMPUS_ORG_PW='${OrganizerPassword}'
+              export CAMPUS_ADMIN_PW='${AdminPassword}'
+              for pair in "org-1:CAMPUS_ORG_PW" "admin-1:CAMPUS_ADMIN_PW"; do
+                uid="$(echo "$pair" | cut -d: -f1)"; var="$(echo "$pair" | cut -d: -f2)"
+                if [ -n "$(printenv "$var")" ]; then
+                  sudo -u ubuntu --preserve-env="$var" bash -c "set -a; . /etc/campus-portal.env; set +a; cd /opt/campus; /opt/campus/.venv/bin/python scripts/set_account_password.py $uid --db /var/lib/campus/portal.sqlite3 --password-env $var" || echo "Could not set password for $uid"
+                fi
+              done
+              unset CAMPUS_ORG_PW CAMPUS_ADMIN_PW
+              set -x
               systemctl enable --now campus-portal.service
+
+              if [ "${EnableCloudflareTunnel}" = "true" ]; then
+                curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb" -o /tmp/cloudflared.deb
+                dpkg -i /tmp/cloudflared.deb
+                rm -f /tmp/cloudflared.deb
+
+                cat > /etc/systemd/system/campus-tunnel.service <<'TUNNEL'
+              [Unit]
+              Description=Cloudflare Quick Tunnel for Campus Portal
+              After=network-online.target campus-portal.service
+              Wants=network-online.target
+
+              [Service]
+              Type=simple
+              User=ubuntu
+              ExecStart=/usr/bin/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:4173
+              Restart=always
+              RestartSec=5
+
+              [Install]
+              WantedBy=multi-user.target
+              TUNNEL
+
+                cat > /usr/local/bin/campus-tunnel-url <<'WATCH'
+              #!/bin/bash
+              set -u
+              last=""
+              while true; do
+                url="$(journalctl -u campus-tunnel --no-pager -o cat 2>/dev/null | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | grep -v '://api\.' | tail -n1)"
+                if [ -n "$url" ] && [ "$url" != "$last" ]; then
+                  echo "$url" > /var/lib/campus/tunnel-url.txt
+                  aws ssm put-parameter --region ${AWS::Region} --name "/${AWS::StackName}/tunnel-url" --type String --overwrite --value "$url" && last="$url"
+                fi
+                sleep 10
+              done
+              WATCH
+                chmod 755 /usr/local/bin/campus-tunnel-url
+
+                cat > /etc/systemd/system/campus-tunnel-url.service <<'WATCHSVC'
+              [Unit]
+              Description=Publish the Campus Quick Tunnel URL to SSM Parameter Store
+              After=campus-tunnel.service
+
+              [Service]
+              Type=simple
+              ExecStart=/usr/local/bin/campus-tunnel-url
+              Restart=always
+              RestartSec=10
+
+              [Install]
+              WantedBy=multi-user.target
+              WATCHSVC
+
+                systemctl daemon-reload
+                systemctl enable --now campus-tunnel.service campus-tunnel-url.service
+              fi
             - ResolvedDatabaseUrl: !If
                 - CreateRdsResources
                 - !Sub 'postgresql://campus_admin:${DbMasterPassword}@${PortalPostgresInstance.Endpoint.Address}:${PortalPostgresInstance.Endpoint.Port}/campus?sslmode=require'
@@ -510,6 +606,10 @@ Outputs:
   DashboardName:
     Description: CloudWatch monitoring dashboard name.
     Value: !Ref PortalCloudWatchDashboard
+  TunnelUrlParameter:
+    Condition: UseCloudflareTunnel
+    Description: SSM parameter holding the public https://*.trycloudflare.com URL (updated if the tunnel restarts).
+    Value: !Sub /${AWS::StackName}/tunnel-url
   CognitoUserPoolId:
     Condition: CreateCognitoResources
     Description: Provisioned Amazon Cognito User Pool ID.

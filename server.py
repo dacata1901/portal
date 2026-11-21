@@ -59,6 +59,8 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self): self.dispatch(self.get_request)
     def do_POST(self): self.dispatch(self.post_request)
     def loopback_request(self):
+        # Traffic relayed by a reverse proxy (Cloudflare adds Cf-Connecting-Ip) is never "this machine".
+        if self.headers.get('Cf-Connecting-Ip') or self.headers.get('X-Forwarded-For'): return False
         try:
             host=urlsplit('//'+self.headers.get('Host','')).hostname
             return ipaddress.ip_address(self.client_address[0]).is_loopback and host in ('localhost','127.0.0.1','::1')
@@ -79,11 +81,18 @@ class Handler(SimpleHTTPRequestHandler):
         try: jar.load(self.headers.get('Cookie',''))
         except CookieError: return None
         return jar[COOKIE_NAME].value if COOKIE_NAME in jar else None
+    def request_scheme(self):
+        # Only a reverse proxy on this host (cloudflared) may declare the public scheme.
+        if os.environ.get('PORTAL_SECURE_COOKIES')=='1': return 'https'
+        try: proxied=ipaddress.ip_address(self.client_address[0]).is_loopback
+        except ValueError: proxied=False
+        if proxied and os.environ.get('PORTAL_TRUST_LOCAL_PROXY')=='1' and self.headers.get('X-Forwarded-Proto','').lower()=='https': return 'https'
+        return 'http'
     def session_cookie(self,token=''):
-        secure='; Secure' if os.environ.get('PORTAL_SECURE_COOKIES')=='1' else ''
+        secure='; Secure' if Handler.request_scheme(self)=='https' else ''
         return f'{COOKIE_NAME}={token}; Path=/api; HttpOnly; SameSite=Strict; Max-Age={SESSION_SECONDS if token else 0}{secure}'
     def check_account_origin(self):
-        scheme='https' if os.environ.get('PORTAL_SECURE_COOKIES')=='1' else 'http'
+        scheme=Handler.request_scheme(self)
         if self.headers.get('Origin')!=f'{scheme}://{self.headers.get("Host","")}' or self.headers.get('Sec-Fetch-Site')=='cross-site':
             raise AccountError(403,'INVALID_ORIGIN','Yêu cầu không xuất phát từ trang Campus hiện tại.')
     def request_identity(self):
@@ -98,6 +107,9 @@ class Handler(SimpleHTTPRequestHandler):
                     raise AccountError(403,'INVALID_CSRF','Phiên bảo vệ không hợp lệ. Hãy tải lại trang rồi thử lại.')
             return dict(user_id=active['user']['id'],groups=None)
         identity=identity_from_headers(self.headers)
+        # X-Demo-User is a spoofable classroom shortcut: honour it only on this machine.
+        if identity['user_id'] and os.environ.get('PORTAL_ALLOW_REMOTE_DEMO')=='1' and not self.loopback_request():
+            raise AuthenticationError('Vui lòng đăng nhập bằng email và mật khẩu.')
         if identity['user_id'].startswith('local-'):
             raise AuthenticationError('Tài khoản này cần đăng nhập bằng email và mật khẩu.')
         return identity
