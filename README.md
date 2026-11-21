@@ -2,6 +2,13 @@
 
 **Campus Event Portal** là ứng dụng web quản lý và đăng ký sự kiện đại học chịu tải cao, chống đăng ký quá chỗ (race condition), hỗ trợ phân quyền chặt chẽ 3 vai trò, xác thực tài khoản an toàn và triển khai tự động theo mô hình **Multi-Cloud (Cloudflare Edge HTTPS + AWS Cloud)**.
 
+> 🌐 **Truy cập bản Demo trực tuyến 24/7 (Cloudflare HTTPS + AWS EC2 — mở được từ mọi mạng Wi-Fi/4G):**
+> - **Trang chủ ứng dụng:** https://musical-painted-realtors-administered.trycloudflare.com
+> - **Kiểm tra trạng thái hệ thống (`/readyz`):** https://musical-painted-realtors-administered.trycloudflare.com/readyz
+> - **API danh sách sự kiện (`/api/events`):** https://musical-painted-realtors-administered.trycloudflare.com/api/events
+>
+> *(Lưu ý: Đường link `http://127.0.0.1:4173/` ở Mục 5 bên dưới chỉ dùng khi bạn tự chạy máy chủ trên máy tính cá nhân bằng lệnh `py -3 server.py`.)*
+
 ---
 
 ## 1. Tính năng nổi bật
