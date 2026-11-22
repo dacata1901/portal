@@ -132,7 +132,7 @@ Hệ thống được kiểm thử tự động hoàn toàn (kể cả tự đ�
 | :--- | :---: | :--- |
 | **Kiểm thử Backend, Quản trị & Bảo mật (Python)** | ✅ **46 / 46 Đạt** | Đảm bảo phân quyền đúng, CRUD Admin chuẩn, đổi mật khẩu, sao lưu/khôi phục và cấu hình AWS hợp lệ. |
 | **Kiểm thử Giao diện (Node.js)** | ✅ **20 / 20 Đạt** | Giao diện không lỗi cú pháp, chống chèn mã độc (XSS), xuất file CSV tiếng Việt chuẩn. |
-| **Bài test 100 người tranh 20 chỗ cùng lúc** | ✅ **Đạt** | Đúng **20 người thành công**, **80 người nhận báo hết chỗ**, **0 lỗi máy chủ**, không âm chỗ. |
+| **Bài test 100 người tranh 20 chỗ cùng lúc** | ✅ **Đạt** | Đúng **20 người thành công**, **80 người nhận báo hết chỗ**, **0 lỗi máy chủ**, không âm chỗ (`p50 = 195.4 ms`, `p95 = 740.9 ms`). |
 | **Bài test rớt mạng giữa chừng & thử lại 10 lần** | ✅ **Đạt** | Cả **10 lần thử lại** đều trả về đúng 1 mã vé duy nhất, không bị trừ thêm chỗ. |
 | **Bài test 20 lượt hủy vé cùng lúc** | ✅ **Đạt** | Chỉ hoàn lại đúng 1 chỗ, dữ liệu trước và sau kiểm tra đều khớp 100%. |
 
